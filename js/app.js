@@ -1,103 +1,127 @@
 (function () {
-  // ---- signature interaction 1: section-hover thinning + meta fade ----
+  // Each subsystem null-guards the nodes it needs so a single missing element
+  // doesn't cascade-unbind the rest (carousel, swipe, theme toggle).
   var plaque = document.getElementById("plaque");
   var meta = document.getElementById("meta");
-  var sections = document.getElementById("sections").querySelectorAll(".plaque-section");
-  function activate(el) {
-    plaque.setAttribute("data-active", "true");
-    meta.textContent = el.getAttribute("data-meta");
-    meta.setAttribute("data-visible", "true");
+  var sectionsRoot = document.getElementById("sections");
+
+  // ---- signature interaction 1: section-hover thinning + meta fade ----
+  if (plaque && meta && sectionsRoot) {
+    var sections = sectionsRoot.querySelectorAll(".plaque-section");
+    function activate(el) {
+      plaque.setAttribute("data-active", "true");
+      meta.textContent = el.getAttribute("data-meta");
+      meta.setAttribute("data-visible", "true");
+    }
+    function deactivate() {
+      plaque.removeAttribute("data-active");
+      meta.removeAttribute("data-visible");
+    }
+    sections.forEach(function (el) {
+      el.addEventListener("mouseenter", function () { activate(el); });
+      el.addEventListener("mouseleave", deactivate);
+      el.addEventListener("focus", function () { activate(el); });
+      el.addEventListener("blur", deactivate);
+    });
   }
-  function deactivate() {
-    plaque.removeAttribute("data-active");
-    meta.removeAttribute("data-visible");
-  }
-  sections.forEach(function (el) {
-    el.addEventListener("mouseenter", function () { activate(el); });
-    el.addEventListener("mouseleave", deactivate);
-    el.addEventListener("focus", function () { activate(el); });
-    el.addEventListener("blur", deactivate);
-  });
 
   // ---- signature interaction 2: wordmark tap-pulse ----
   var wordmark = document.getElementById("wordmark");
-  var pulseTimer = null;
-  wordmark.addEventListener("click", function () {
-    if (pulseTimer) clearTimeout(pulseTimer);
-    plaque.removeAttribute("data-pulsing");
-    // force reflow so the animation restarts on rapid taps
-    void plaque.offsetWidth;
-    plaque.setAttribute("data-pulsing", "true");
-    pulseTimer = setTimeout(function () { plaque.removeAttribute("data-pulsing"); }, 720);
-  });
+  if (plaque && wordmark) {
+    var pulseTimer = null;
+    wordmark.addEventListener("click", function () {
+      if (pulseTimer) clearTimeout(pulseTimer);
+      plaque.removeAttribute("data-pulsing");
+      // force reflow so the animation restarts on rapid taps
+      void plaque.offsetWidth;
+      plaque.setAttribute("data-pulsing", "true");
+      pulseTimer = setTimeout(function () { plaque.removeAttribute("data-pulsing"); }, 720);
+    });
+  }
 
   // ---- theme toggle ----
-  document.getElementById("toggle").addEventListener("click", function () {
-    var root = document.documentElement;
-    root.setAttribute("data-theme", root.getAttribute("data-theme") === "dark" ? "light" : "dark");
-  });
+  var toggle = document.getElementById("toggle");
+  if (toggle) {
+    toggle.addEventListener("click", function () {
+      var root = document.documentElement;
+      root.setAttribute("data-theme", root.getAttribute("data-theme") === "dark" ? "light" : "dark");
+    });
+  }
 
   // ---- carousel: arrow keys, horizontal scroll, swipe, dots ----
   var track = document.getElementById("track");
+  var dotsRoot = document.getElementById("dots");
+  var carousel = document.getElementById("carousel");
   var dots = Array.prototype.slice.call(document.querySelectorAll(".carousel-dot"));
   var panels = Array.prototype.slice.call(document.querySelectorAll(".carousel-slide"));
-  var COUNT = 4, index = 0;
-  function goTo(i) {
-    index = Math.max(0, Math.min(COUNT - 1, i));
-    track.style.transform = "translateX(" + (-index * 100) + "%)";
-    dots.forEach(function (d, n) { d.setAttribute("aria-selected", n === index ? "true" : "false"); });
-    // inert (not aria-hidden) on non-active panels: keeps them out of the a11y tree
-    // AND prevents focus into off-screen interactive elements (theme toggle, links).
-    panels.forEach(function (p, n) { if (n === index) { p.removeAttribute("inert"); } else { p.setAttribute("inert", ""); } });
-    if (index === 1) {
-      var r2 = panels[1];
-      if (r2) r2.classList.add("r2-grow");
+  if (track && carousel && dots.length && panels.length) {
+    var COUNT = panels.length, index = 0;
+    function goTo(i) {
+      index = Math.max(0, Math.min(COUNT - 1, i));
+      track.style.transform = "translateX(" + (-index * 100) + "%)";
+      dots.forEach(function (d, n) { d.setAttribute("aria-selected", n === index ? "true" : "false"); });
+      // inert (not aria-hidden) on non-active panels: keeps them out of the a11y tree
+      // AND prevents focus into off-screen interactive elements (theme toggle, links).
+      panels.forEach(function (p, n) { if (n === index) { p.removeAttribute("inert"); } else { p.setAttribute("inert", ""); } });
+      if (index === 1) {
+        var r2 = panels[1];
+        if (r2) r2.classList.add("r2-grow");
+      }
+      if (dotsRoot) dotsRoot.classList.toggle("dots-on-night", index === 2 || index === 3);
     }
-    document.getElementById("dots").classList.toggle("dots-on-night", index === 2 || index === 3);
+    var _params = new URLSearchParams(location.search);
+    var _sc = _params.get("showcase");
+    if (_params.get("theme")) document.documentElement.setAttribute("data-theme", _params.get("theme"));
+    var _initRoom = 0;
+    if (_sc === "day" || _sc === "night") {
+      _initRoom = 1;
+      document.documentElement.setAttribute("data-theme", _sc === "night" ? "dark" : "light");
+    } else if (_params.get("room")) {
+      _initRoom = Math.max(0, Math.min(COUNT - 1, (parseInt(_params.get("room"), 10) || 1) - 1));
+    }
+    goTo(_initRoom); // initial slide (URL-overridable); Room 1 is the canonical front door
+
+    dots.forEach(function (d) {
+      d.addEventListener("click", function () { goTo(parseInt(d.getAttribute("data-index"), 10)); });
+    });
+
+    window.addEventListener("keydown", function (e) {
+      // ignore modifier-keyed shortcuts (Ctrl/Cmd/Alt+Arrow are browser nav)
+      if (e.ctrlKey || e.metaKey || e.altKey) return;
+      if (e.key === "ArrowRight") { goTo(index + 1); }
+      else if (e.key === "ArrowLeft") { goTo(index - 1); }
+    });
+
+    // horizontal wheel / trackpad scroll
+    var wheelLock = false;
+    carousel.addEventListener("wheel", function (e) {
+      if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+      e.preventDefault();
+      if (wheelLock) return;
+      if (e.deltaX > 12) { goTo(index + 1); wheelLock = true; }
+      else if (e.deltaX < -12) { goTo(index - 1); wheelLock = true; }
+      if (wheelLock) setTimeout(function () { wheelLock = false; }, 600);
+    }, { passive: false });
+
+    // touch swipe — axis-locked. Capture Y so a near-vertical scroll that drifts
+    // >48px horizontally doesn't accidentally page rooms on mobile.
+    var touchX = null, touchY = null;
+    carousel.addEventListener("touchstart", function (e) {
+      touchX = e.touches[0].clientX;
+      touchY = e.touches[0].clientY;
+    }, { passive: true });
+    carousel.addEventListener("touchend", function (e) {
+      if (touchX === null) return;
+      var dx = e.changedTouches[0].clientX - touchX;
+      var dy = e.changedTouches[0].clientY - touchY;
+      // bail if the gesture is vertical-dominant; require horizontal travel >= 48px AND > |dy|.
+      if (Math.abs(dx) >= 48 && Math.abs(dx) > Math.abs(dy)) {
+        if (dx < 0) { goTo(index + 1); }
+        else { goTo(index - 1); }
+      }
+      touchX = touchY = null;
+    }, { passive: true });
   }
-  var _params = new URLSearchParams(location.search);
-  var _sc = _params.get("showcase");
-  if (_params.get("theme")) document.documentElement.setAttribute("data-theme", _params.get("theme"));
-  var _initRoom = 0;
-  if (_sc === "day" || _sc === "night") {
-    _initRoom = 1;
-    document.documentElement.setAttribute("data-theme", _sc === "night" ? "dark" : "light");
-  } else if (_params.get("room")) {
-    _initRoom = Math.max(0, Math.min(COUNT - 1, (parseInt(_params.get("room"), 10) || 1) - 1));
-  }
-  goTo(_initRoom); // initial slide (URL-overridable); Room 1 is the canonical front door
-
-  dots.forEach(function (d) {
-    d.addEventListener("click", function () { goTo(parseInt(d.getAttribute("data-index"), 10)); });
-  });
-
-  window.addEventListener("keydown", function (e) {
-    if (e.key === "ArrowRight") { goTo(index + 1); }
-    else if (e.key === "ArrowLeft") { goTo(index - 1); }
-  });
-
-  // horizontal wheel / trackpad scroll
-  var wheelLock = false;
-  document.getElementById("carousel").addEventListener("wheel", function (e) {
-    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
-    e.preventDefault();
-    if (wheelLock) return;
-    if (e.deltaX > 12) { goTo(index + 1); wheelLock = true; }
-    else if (e.deltaX < -12) { goTo(index - 1); wheelLock = true; }
-    if (wheelLock) setTimeout(function () { wheelLock = false; }, 600);
-  }, { passive: false });
-
-  // touch swipe
-  var touchX = null;
-  var carousel = document.getElementById("carousel");
-  carousel.addEventListener("touchstart", function (e) { touchX = e.touches[0].clientX; }, { passive: true });
-  carousel.addEventListener("touchend", function (e) {
-    if (touchX === null) return;
-    var dx = e.changedTouches[0].clientX - touchX;
-    if (dx < -48) { goTo(index + 1); }
-    else if (dx > 48) { goTo(index - 1); }
-    touchX = null;
-  }, { passive: true });
 })();
 
 /* ============================================================
