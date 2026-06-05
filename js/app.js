@@ -59,6 +59,9 @@
     function goTo(i) {
       index = Math.max(0, Math.min(COUNT - 1, i));
       track.style.transform = "translateX(" + (-index * 100) + "%)";
+      // Reset vertical scroll on slide change so swiping from a tall slide to a
+      // shorter one doesn't strand the user in the next slide's middle.
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
       dots.forEach(function (d, n) { d.setAttribute("aria-selected", n === index ? "true" : "false"); });
       // inert (not aria-hidden) on non-active panels: keeps them out of the a11y tree
       // AND prevents focus into off-screen interactive elements (theme toggle, links).

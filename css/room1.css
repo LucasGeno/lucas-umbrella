@@ -14,12 +14,14 @@
    ROOM 1 — THE PLAQUE (faithful to production umbrella.css)
    ============================================================ */
 .plaque {
-  width: 100%; height: 100%;
+  width: 100%; min-height: 100vh;
   background: var(--plaque-paper);
   color: var(--plaque-ink);
   font-family: var(--plaque-font-body);
-  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-  padding: clamp(40px, 18vh, 188px) var(--plaque-s-5) 56px;
+  /* prod pattern: space-between pushes the colophon to the bottom via margin-top:auto,
+     wordmark/nav/copy sit in the upper third from the 26vh top padding. */
+  display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+  padding: 26vh var(--plaque-s-5) 56px;
   position: relative; isolation: isolate;
 }
 
@@ -71,14 +73,11 @@
 }
 .plaque-meta__text[data-visible="true"] { opacity: 1; }
 
-/* Short viewports (landscape phones, compact windows): shrink wordmark + tighten
-   padding so two stacked lines + section + colophon fit without clipping. */
-@media (max-height: 500px) {
-  .plaque { padding: clamp(20px, 6vh, 40px) var(--plaque-s-5); }
-  .plaque-wordmark { font-size: clamp(56px, 14vh, 120px); }
-  .plaque-section-line { margin-top: clamp(8px, 2vh, 24px); }
-  .plaque-meta { margin-top: clamp(4px, 1vh, 16px); }
-  .plaque-colophon { padding-top: clamp(8px, 2vh, 32px); }
+/* Mobile (prod pattern): tighten top padding so the plaque doesn't
+   over-anchor on small portrait viewports. Mirrors the single
+   @media (max-width: 480px) rule in compose/admin/app/static/umbrella.css. */
+@media (max-width: 480px) {
+  .plaque { padding: 12vh var(--plaque-s-4) 56px; }
 }
 
 .plaque-copy {

@@ -1,24 +1,21 @@
 /* ============================================================
-   STAGE — full-viewport frame; rooms fill any device.
+   STAGE — natural flow; each slide is its own min-100vh plaque.
+   Mirrors the prod plaque pattern: nothing fights the viewport.
    ============================================================ */
 * { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; height: 100%; }
+html, body { margin: 0; padding: 0; min-height: 100%; }
 body {
   background: #000;
   font-family: var(--plaque-font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  overflow: hidden;
+  /* clip ONLY the horizontal carousel-track translate; vertical scroll stays
+     available so a tall slide on a short viewport can flow naturally. */
+  overflow-x: hidden;
 }
 .stage {
-  position: fixed; inset: 0;
-  height: 100vh;
-  height: 100dvh;
-  overflow: hidden;
+  position: relative;
+  min-height: 100vh;
   background: #000;
-}
-.frame {
-  position: absolute; inset: 0;
-  overflow: hidden;
 }

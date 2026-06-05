@@ -32,11 +32,9 @@
 .room4-wordmark {
   position: relative; z-index: 4; color: #1a1612;
   /* Smaller than the base wordmark by design — sits inside the microscopy lit lens.
-     Scales with both axes so the wordmark stays inside the lens across viewports. */
-  font-size: clamp(40px, min(16vw, 16vh), 174px);
-}
-@media (max-height: 500px) {
-  .room4-wordmark { font-size: clamp(32px, min(12vw, 12vh), 96px); }
+     Single-axis vw clamp mirrors the base --plaque-size-mark pattern; the lens
+     itself is sized min(70vh, 70vw) so it shrinks proportionally on any viewport. */
+  font-size: clamp(40px, 12vw, 174px);
 }
 
 /* paramecium — gentle leftward arc drift, no rotation, 12s */

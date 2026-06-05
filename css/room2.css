@@ -1,7 +1,10 @@
 /* ============================================================
    ROOM 2 — BOTANICAL (line-art flora: draw-on, then sway)
    ============================================================ */
-.room2 { position: relative; overflow: hidden; }
+/* Vista rooms only render the wordmark — center it on the SVG composition.
+   (Room 1 uses justify-content:space-between because it has nav + colophon
+   children to distribute; Rooms 2/3/4 have just the h2 wordmark.) */
+.room2 { position: relative; overflow: hidden; justify-content: center; padding-top: 0; padding-bottom: 0; }
 .room2-flora {
   position: absolute; inset: 0;
   width: 100%; height: 100%;
