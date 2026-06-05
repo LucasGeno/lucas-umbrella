@@ -55,7 +55,7 @@
   var _params = new URLSearchParams(location.search);
   var _sc = _params.get("showcase");
   if (_params.get("theme")) document.documentElement.setAttribute("data-theme", _params.get("theme"));
-  var _initRoom = 3;
+  var _initRoom = 0;
   if (_sc === "day" || _sc === "night") {
     _initRoom = 1;
     document.documentElement.setAttribute("data-theme", _sc === "night" ? "dark" : "light");
