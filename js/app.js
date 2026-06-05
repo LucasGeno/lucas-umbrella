@@ -1,16 +1,4 @@
 (function () {
-  // ---- scale the fixed frame to fit the viewport (letterboxed) ----
-  var frame = document.getElementById("frame");
-  function fit() {
-    var w = window.innerWidth, h = window.innerHeight;
-    if (!w || !h) { requestAnimationFrame(fit); return; }
-    var s = Math.min(w / 1440, h / 900);
-    frame.style.transform = "translate(-50%, -50%) scale(" + s + ")";
-  }
-  fit();
-  window.addEventListener("resize", fit);
-  window.addEventListener("load", fit);
-
   // ---- signature interaction 1: section-hover thinning + meta fade ----
   var plaque = document.getElementById("plaque");
   var meta = document.getElementById("meta");

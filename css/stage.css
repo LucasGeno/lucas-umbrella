@@ -1,5 +1,5 @@
 /* ============================================================
-   STAGE — letterbox the fixed 1440×900 frame into any viewport
+   STAGE — full-viewport frame; rooms fill any device.
    ============================================================ */
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; height: 100%; }
@@ -18,9 +18,9 @@ body {
 }
 .frame {
   position: absolute;
-  top: 50%; left: 50%;
-  width: 1440px; height: 900px;
-  transform: translate(-50%, -50%) scale(1);
-  transform-origin: center center;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
   overflow: hidden;
 }

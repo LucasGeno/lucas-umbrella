@@ -10,7 +10,7 @@
 /* blurred unfocused slide haze ringing the lens */
 .room4-haze {
   position: absolute; left: 50%; top: 50%; z-index: 1; pointer-events: none;
-  width: 900px; height: 900px; transform: translate(-50%, -50%);
+  width: min(95vh, 95vw); height: min(95vh, 95vw); transform: translate(-50%, -50%);
   background: radial-gradient(circle 450px at 50% 50%,
     rgba(253,251,245,0) 71%,
     rgba(253,251,245,0.11) 80%,
@@ -21,7 +21,7 @@
 /* the lit viewport — soft luminous falloff, no drawn ring */
 .room4-lens {
   position: absolute; left: 50%; top: 50%; z-index: 2; pointer-events: none;
-  width: 660px; height: 660px; transform: translate(-50%, -50%);
+  width: min(70vh, 70vw); height: min(70vh, 70vw); transform: translate(-50%, -50%);
   background: radial-gradient(circle 330px at 50% 50%,
     #fefdf8 0%,
     #fdfbf5 60%,
