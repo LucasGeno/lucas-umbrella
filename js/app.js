@@ -13,7 +13,6 @@
     meta.removeAttribute("data-visible");
   }
   sections.forEach(function (el) {
-    el.addEventListener("click", function (e) { e.preventDefault(); });
     el.addEventListener("mouseenter", function () { activate(el); });
     el.addEventListener("mouseleave", deactivate);
     el.addEventListener("focus", function () { activate(el); });
