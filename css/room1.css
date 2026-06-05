@@ -1,0 +1,103 @@
+/*
+ * Room 1 — the Plaque (the unaltered baseline).
+ *
+ * NOTE: This file also hosts the shared `.plaque` shell + theme-toggle
+ * chrome (.plaque-wordmark, .plaque-section-line, .plaque-meta,
+ * .plaque-colophon, .plaque-chrome, .theme-toggle, .icon-sun, .icon-moon).
+ * Every room renders <main class="plaque"> and inherits this shell —
+ * these rules are de-facto shared baseline, not room-1-specific. They live
+ * here because Room 1 is the unaltered baseline; Rooms 2/3/4 override
+ * specific properties in their own files.
+ */
+
+/* ============================================================
+   ROOM 1 — THE PLAQUE (faithful to production umbrella.css)
+   ============================================================ */
+.plaque {
+  width: 100%; height: 100%;
+  background: var(--plaque-paper);
+  color: var(--plaque-ink);
+  font-family: var(--plaque-font-body);
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+  padding: 188px var(--plaque-s-5) 40px;
+  position: relative; isolation: isolate;
+}
+
+.plaque-wordmark {
+  font-family: var(--plaque-font-wordmark);
+  font-size: 248px;
+  line-height: 0.92; letter-spacing: -0.02em; text-align: center; margin: 0;
+  user-select: none; cursor: pointer;
+  font-variation-settings: var(--plaque-mark-rest);
+  transition: font-variation-settings var(--plaque-t-base);
+  contain: layout;
+}
+.plaque-wordmark__given, .plaque-wordmark__family { display: block; }
+.plaque[data-active="true"] .plaque-wordmark { font-variation-settings: var(--plaque-mark-active); }
+
+@keyframes plaque-pulse {
+  0%   { font-variation-settings: "opsz" 144, "wdth" 125, "wght" 800; animation-timing-function: ease-in; }
+  50%  { font-variation-settings: "opsz" 144, "wdth" 125, "wght" 100; animation-timing-function: cubic-bezier(.34, 1.56, .64, 1); }
+  100% { font-variation-settings: "opsz" 144, "wdth" 125, "wght" 800; }
+}
+.plaque[data-pulsing="true"] .plaque-wordmark { animation: plaque-pulse 700ms; }
+@media (prefers-reduced-motion: reduce) {
+  .plaque[data-pulsing="true"] .plaque-wordmark { animation-duration: 0ms; }
+}
+
+.plaque-section-line {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center;
+  gap: 0 var(--plaque-s-4); margin-top: var(--plaque-s-7);
+}
+.plaque-section {
+  font-family: var(--plaque-font-body); font-size: var(--plaque-size-section);
+  font-weight: 500;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--plaque-ink);
+  text-decoration: none; transition: opacity var(--plaque-t-fast);
+}
+.plaque-section:hover, .plaque-section:focus-visible { opacity: 0.6; }
+.plaque-section:focus-visible { outline: 1px solid var(--plaque-ink); outline-offset: 4px; }
+.plaque-section-sep { color: var(--plaque-ink-3); font-size: var(--plaque-size-section); }
+
+.plaque-meta { min-height: 1.5em; margin-top: var(--plaque-s-5); }
+.plaque-meta__text {
+  margin: 0; font-family: var(--plaque-font-body); font-size: var(--plaque-size-meta);
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--plaque-ink-3);
+  opacity: 0; transition: opacity var(--plaque-t-base); text-align: center;
+}
+.plaque-meta__text[data-visible="true"] { opacity: 1; }
+
+.plaque-copy {
+  margin: var(--plaque-s-6) 0 0; font-family: var(--plaque-font-body);
+  font-size: var(--plaque-size-copy); color: var(--plaque-ink-3);
+  text-align: center; max-width: 60ch;
+}
+
+.plaque-colophon {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline;
+  gap: 0 var(--plaque-s-4); width: 100%; margin-top: auto; padding-top: var(--plaque-s-8);
+  font-family: var(--plaque-font-body); font-size: var(--plaque-size-colophon);
+  letter-spacing: 0.04em; text-transform: uppercase; color: var(--plaque-ink-3);
+}
+.plaque-colophon__sep { color: var(--plaque-ink-3); }
+.plaque-colophon a { color: var(--plaque-ink-2); text-decoration: none; transition: opacity var(--plaque-t-fast); }
+.plaque-colophon a:hover, .plaque-colophon a:focus-visible { opacity: 0.6; }
+
+/* theme toggle — fixed top-right, 28×28, 1px ink border, squared */
+.plaque-chrome { position: absolute; top: var(--plaque-s-5); right: var(--plaque-s-5); z-index: 30; }
+.theme-toggle {
+  display: grid; place-items: center;
+  width: 28px; height: 28px;
+  background: transparent;
+  border: 1px solid var(--plaque-ink);
+  color: var(--plaque-ink);
+  border-radius: 0; cursor: pointer; padding: 0;
+  transition: opacity var(--plaque-t-fast);
+}
+.theme-toggle:hover, .theme-toggle:focus-visible { opacity: 0.6; }
+.theme-toggle:focus-visible { outline: 1px solid var(--plaque-ink); outline-offset: 3px; }
+.theme-toggle svg { width: 12px; height: 12px; }
+.theme-toggle .icon-sun { display: none; }
+.theme-toggle .icon-moon { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }

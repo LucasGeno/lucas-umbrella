@@ -1,0 +1,61 @@
+/* ============================================================
+   THE PLAQUE — tokens (forked from design system colors_and_type.css)
+   ============================================================ */
+@font-face {
+  font-family: "Roboto Flex";
+  src: url("../fonts/RobotoFlex.ttf") format("truetype-variations");
+  font-weight: 100 1000;
+  font-stretch: 25% 151%;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter Tight";
+  src: url("../fonts/InterTight.ttf") format("truetype-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root,
+:root[data-theme="light"] {
+  --plaque-paper:    #f3ede0;
+  --plaque-paper-2:  #ebe3d3;
+  --plaque-ink:      #0c0c0a;
+  --plaque-ink-2:    #2a2a26;
+  --plaque-ink-3:    #5d5c55;
+}
+:root[data-theme="dark"] {
+  --plaque-paper:    #14110d;
+  --plaque-paper-2:  #0f0e0a;
+  --plaque-ink:      #e8e6e1;
+  --plaque-ink-2:    #b8b6b1;
+  --plaque-ink-3:    #8a8478;
+}
+:root {
+  --plaque-font-wordmark: "Roboto Flex", system-ui, sans-serif;
+  --plaque-font-body:     "Inter Tight", system-ui, sans-serif;
+
+  --plaque-size-mark:     clamp(72px, 18vw, 280px);
+  --plaque-size-section:  14px;
+  --plaque-size-meta:     13px;
+  --plaque-size-copy:     16px;
+  --plaque-size-colophon: 12px;
+
+  --plaque-mark-rest:   "opsz" 144, "wdth" 125, "wght" 800;
+  --plaque-mark-active: "opsz" 144, "wdth" 125, "wght" 100;
+
+  --plaque-s-2: 8px;
+  --plaque-s-4: 16px;
+  --plaque-s-5: 24px;
+  --plaque-s-6: 32px;
+  --plaque-s-7: 48px;
+  --plaque-s-8: 64px;
+
+  --plaque-t-fast: 120ms ease;
+  --plaque-t-base: 400ms ease;
+  --plaque-ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --plaque-t-fast: 0ms; --plaque-t-base: 0ms; }
+}

@@ -1,0 +1,26 @@
+/* ============================================================
+   STAGE — letterbox the fixed 1440×900 frame into any viewport
+   ============================================================ */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; }
+body {
+  background: #000;
+  font-family: var(--plaque-font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+}
+.stage {
+  position: fixed; inset: 0;
+  overflow: hidden;
+  background: #000;
+}
+.frame {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 1440px; height: 900px;
+  transform: translate(-50%, -50%) scale(1);
+  transform-origin: center center;
+  overflow: hidden;
+}

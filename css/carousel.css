@@ -1,0 +1,63 @@
+/* ============================================================
+   CAROUSEL — structural only. No chrome but the three dots.
+   Each room owns its own background; container has none.
+   ============================================================ */
+.carousel {
+  width: 100%; height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.carousel-track {
+  display: flex;
+  width: 100%; height: 100%;
+  transform: translateX(0);
+  transition: transform 500ms ease-in-out;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .carousel-track { transition-duration: 0ms; }
+}
+.carousel-slide {
+  flex: 0 0 100%;
+  width: 100%; height: 100%;
+  position: relative;
+}
+
+/* placeholder rooms — unstyled, just a centred label in ink */
+.carousel-slide--placeholder {
+  display: grid; place-items: center;
+  background: var(--plaque-paper);
+}
+.room-placeholder {
+  margin: 0;
+  font-family: var(--plaque-font-body);
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  color: var(--plaque-ink);
+  text-align: center;
+}
+
+/* the one permitted indicator: three dots, centred, bottom edge */
+.carousel-dots {
+  position: absolute;
+  left: 50%; bottom: 48px;
+  transform: translateX(-50%);
+  display: flex; gap: 12px; align-items: center;
+  z-index: 40;
+  color: var(--plaque-ink);
+}
+.carousel-dot {
+  width: 6px; height: 6px;
+  padding: 0; margin: 0; border: 0;
+  border-radius: 50%;
+  color: var(--plaque-ink);
+  background: currentColor;
+  opacity: 0.2;
+  cursor: pointer;
+  transition: opacity var(--plaque-t-fast);
+}
+.carousel-dot[aria-current="true"] { opacity: 1; }
+.carousel-dot:focus-visible { outline: 1px solid currentColor; outline-offset: 4px; }
+
+/* Moved from the Room 3 banner: JS adds .dots-on-night for rooms 3 AND 4, so this is carousel chrome, not room-3-specific. */
+.carousel-dots.dots-on-night .carousel-dot { color: #fdfbf5; }

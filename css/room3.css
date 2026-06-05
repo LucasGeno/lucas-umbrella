@@ -1,0 +1,27 @@
+/* ============================================================
+   ROOM 3 — LUNAR (night; the cream canvas finally breaks)
+   ============================================================ */
+.room3 { background: #0a0807; color: #fdfbf5; overflow: hidden; }
+.room3-sky {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  z-index: 0; pointer-events: none;
+}
+.room3-surface {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 25%;
+  background: linear-gradient(to bottom, rgba(28,23,20,0) 0%, rgba(28,23,20,0.5) 55%, #1c1714 100%);
+  z-index: 0; pointer-events: none;
+}
+.room3-surface::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: rgba(253,251,245,0.05);
+}
+.room3-wordmark { position: relative; z-index: 1; color: #fdfbf5; }
+.room3 .r3-line { display: block; }
+.room3 .g { display: inline-block; transform-origin: 50% 50%; }
+/* untouched anchors: L, u, d (no transform) */
+.room3 .g-c  { transform: translate(26px, -80px) rotate(12deg); }
+.room3 .g-a  { opacity: 0; }                              /* escaped upward */
+.room3 .g-s  { transform: translate(60px, -150px) rotate(-25deg); }
+.room3 .g-R  { transform: translate(0, -20px) rotate(3deg); }
+.room3 .g-e1 { transform: translate(0, 120px) rotate(45deg); }
+.room3 .g-e2 { transform: translate(-676px, 278px) rotate(90deg); } /* landed bottom-left on the regolith */
