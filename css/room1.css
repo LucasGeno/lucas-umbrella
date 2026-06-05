@@ -19,13 +19,13 @@
   color: var(--plaque-ink);
   font-family: var(--plaque-font-body);
   display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-  padding: clamp(40px, 18vh, 188px) var(--plaque-s-5) 40px;
+  padding: clamp(40px, 18vh, 188px) var(--plaque-s-5) 56px;
   position: relative; isolation: isolate;
 }
 
 .plaque-wordmark {
   font-family: var(--plaque-font-wordmark);
-  font-size: 248px;
+  font-size: var(--plaque-size-mark);
   line-height: 0.92; letter-spacing: -0.02em; text-align: center; margin: 0;
   user-select: none; cursor: pointer;
   font-variation-settings: var(--plaque-mark-rest);
@@ -66,6 +66,16 @@
   opacity: 0; transition: opacity var(--plaque-t-base); text-align: center;
 }
 .plaque-meta__text[data-visible="true"] { opacity: 1; }
+
+/* Short viewports (landscape phones, compact windows): shrink wordmark + tighten
+   padding so two stacked lines + section + colophon fit without clipping. */
+@media (max-height: 500px) {
+  .plaque { padding: clamp(20px, 6vh, 40px) var(--plaque-s-5); }
+  .plaque-wordmark { font-size: clamp(56px, 14vh, 120px); }
+  .plaque-section-line { margin-top: clamp(8px, 2vh, 24px); }
+  .plaque-meta { margin-top: clamp(4px, 1vh, 16px); }
+  .plaque-colophon { padding-top: clamp(8px, 2vh, 32px); }
+}
 
 .plaque-copy {
   margin: var(--plaque-s-6) 0 0; font-family: var(--plaque-font-body);

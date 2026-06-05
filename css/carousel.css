@@ -40,7 +40,7 @@
 /* the one permitted indicator: three dots, centred, bottom edge */
 .carousel-dots {
   position: absolute;
-  left: 50%; bottom: 48px;
+  left: 50%; bottom: 16px;
   transform: translateX(-50%);
   display: flex; gap: 12px; align-items: center;
   z-index: 40;

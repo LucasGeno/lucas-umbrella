@@ -31,7 +31,12 @@
 .room4-orgs { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; pointer-events: none; }
 .room4-wordmark {
   position: relative; z-index: 4; color: #1a1612;
-  font-size: 150px;
+  /* Smaller than the base wordmark by design — sits inside the microscopy lit lens.
+     Scales with both axes so the wordmark stays inside the lens across viewports. */
+  font-size: clamp(40px, min(16vw, 16vh), 174px);
+}
+@media (max-height: 500px) {
+  .room4-wordmark { font-size: clamp(32px, min(12vw, 12vh), 96px); }
 }
 
 /* paramecium — gentle leftward arc drift, no rotation, 12s */
