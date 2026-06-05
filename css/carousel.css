@@ -54,8 +54,11 @@
   background: currentColor;
   opacity: 0.2;
   cursor: pointer;
+  position: relative;
   transition: opacity var(--plaque-t-fast);
 }
+/* 44×44 transparent hit area centered on the visible 6×6 dot (WCAG/Apple HIG min). */
+.carousel-dot::before { content: ""; position: absolute; inset: -19px; }
 .carousel-dot[aria-current="true"] { opacity: 1; }
 .carousel-dot:focus-visible { outline: 1px solid currentColor; outline-offset: 4px; }
 

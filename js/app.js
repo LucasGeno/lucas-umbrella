@@ -107,7 +107,6 @@
   var birdG = document.querySelector(".room2-bird .bird");
   var nightSvg = document.querySelector(".room2-night");
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  var frame = document.getElementById("frame");
   function theme() { return document.documentElement.getAttribute("data-theme"); }
 
   // ----- bird (day): a glimpse, ~30-60s apart, 6s gentle-arc crossing -----
@@ -135,7 +134,9 @@
   }
 
   // ----- eyes (night): one pair, rotating zones, blink, hunt-cooldown -----
-  var zones = { A: [720, 128], B: [1185, 452], C: [322, 832] };
+  // Eye positions are encoded in the SVG markup as <g transform="translate(...)">;
+  // hunt-proximity uses getBoundingClientRect on the active eye element so the
+  // check stays accurate regardless of how the SVG slice-scales to the viewport.
   var eyeEls = nightSvg ? [].slice.call(nightSvg.querySelectorAll(".r2-eyes")) : [];
   var cooldownUntil = 0, zi = 0, activeEye = null, eyeState = "idle", eyesTimer = null;
   function byZone(z) { for (var i = 0; i < eyeEls.length; i++) if (eyeEls[i].getAttribute("data-zone") === z) return eyeEls[i]; return null; }
@@ -162,10 +163,10 @@
   if (nightSvg) {
     document.getElementById("carousel").addEventListener("pointermove", function (e) {
       if (eyeState !== "open" || !activeEye || theme() !== "dark") return;
-      var fr = frame.getBoundingClientRect(), s = fr.width / 1440 || 1;
-      var zc = zones[activeEye.getAttribute("data-zone")];
-      var d = Math.hypot(e.clientX - (fr.left + zc[0] * s), e.clientY - (fr.top + zc[1] * s));
-      if (d < 100 * s) {
+      var er = activeEye.getBoundingClientRect();
+      var cx = er.left + er.width / 2, cy = er.top + er.height / 2;
+      var d = Math.hypot(e.clientX - cx, e.clientY - cy);
+      if (d < 100) {
         activeEye.style.transition = "none"; activeEye.setAttribute("opacity", "0");
         eyeState = "idle"; activeEye = null;
         cooldownUntil = performance.now() + (45000 + Math.random() * 45000);
