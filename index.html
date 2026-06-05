@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Lucas Reed — Room 1</title>
+<style>
+/* ============================================================
+   THE PLAQUE — tokens (forked from design system colors_and_type.css)
+   ============================================================ */
+@font-face {
+  font-family: "Roboto Flex";
+  src: url("fonts/RobotoFlex.ttf") format("truetype-variations");
+  font-weight: 100 1000;
+  font-stretch: 25% 151%;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Inter Tight";
+  src: url("fonts/InterTight.ttf") format("truetype-variations");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root,
+:root[data-theme="light"] {
+  --plaque-paper:    #f3ede0;
+  --plaque-paper-2:  #ebe3d3;
+  --plaque-ink:      #0c0c0a;
+  --plaque-ink-2:    #2a2a26;
+  --plaque-ink-3:    #5d5c55;
+}
+:root[data-theme="dark"] {
+  --plaque-paper:    #14110d;
+  --plaque-paper-2:  #0f0e0a;
+  --plaque-ink:      #e8e6e1;
+  --plaque-ink-2:    #b8b6b1;
+  --plaque-ink-3:    #8a8478;
+}
+:root {
+  --plaque-font-wordmark: "Roboto Flex", system-ui, sans-serif;
+  --plaque-font-body:     "Inter Tight", system-ui, sans-serif;
+
+  --plaque-size-mark:     clamp(72px, 18vw, 280px);
+  --plaque-size-section:  14px;
+  --plaque-size-meta:     13px;
+  --plaque-size-copy:     16px;
+  --plaque-size-colophon: 12px;
+
+  --plaque-mark-rest:   "opsz" 144, "wdth" 125, "wght" 800;
+  --plaque-mark-active: "opsz" 144, "wdth" 125, "wght" 100;
+
+  --plaque-s-2: 8px;
+  --plaque-s-4: 16px;
+  --plaque-s-5: 24px;
+  --plaque-s-6: 32px;
+  --plaque-s-7: 48px;
+  --plaque-s-8: 64px;
+
+  --plaque-t-fast: 120ms ease;
+  --plaque-t-base: 400ms ease;
+  --plaque-ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  :root { --plaque-t-fast: 0ms; --plaque-t-base: 0ms; }
+}
+
+/* ============================================================
+   STAGE — letterbox the fixed 1440×900 frame into any viewport
+   ============================================================ */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; }
+body {
+  background: #000;
+  font-family: var(--plaque-font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow: hidden;
+}
+.stage {
+  position: fixed; inset: 0;
+  overflow: hidden;
+  background: #000;
+}
+.frame {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 1440px; height: 900px;
+  transform: translate(-50%, -50%) scale(1);
+  transform-origin: center center;
+  overflow: hidden;
+}
+
+/* ============================================================
+   CAROUSEL — structural only. No chrome but the three dots.
+   Each room owns its own background; container has none.
+   ============================================================ */
+.carousel {
+  width: 100%; height: 100%;
+  position: relative;
+  overflow: hidden;
+}
+.carousel-track {
+  display: flex;
+  width: 100%; height: 100%;
+  transform: translateX(0);
+  transition: transform 500ms ease-in-out;
+  will-change: transform;
+}
+@media (prefers-reduced-motion: reduce) {
+  .carousel-track { transition-duration: 0ms; }
+}
+.carousel-slide {
+  flex: 0 0 100%;
+  width: 100%; height: 100%;
+  position: relative;
+}
+
+/* placeholder rooms — unstyled, just a centred label in ink */
+.carousel-slide--placeholder {
+  display: grid; place-items: center;
+  background: var(--plaque-paper);
+}
+.room-placeholder {
+  margin: 0;
+  font-family: var(--plaque-font-body);
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  color: var(--plaque-ink);
+  text-align: center;
+}
+
+/* the one permitted indicator: three dots, centred, bottom edge */
+.carousel-dots {
+  position: absolute;
+  left: 50%; bottom: 48px;
+  transform: translateX(-50%);
+  display: flex; gap: 12px; align-items: center;
+  z-index: 40;
+  color: var(--plaque-ink);
+}
+.carousel-dot {
+  width: 6px; height: 6px;
+  padding: 0; margin: 0; border: 0;
+  border-radius: 50%;
+  color: var(--plaque-ink);
+  background: currentColor;
+  opacity: 0.2;
+  cursor: pointer;
+  transition: opacity var(--plaque-t-fast);
+}
+.carousel-dot[aria-current="true"] { opacity: 1; }
+.carousel-dot:focus-visible { outline: 1px solid currentColor; outline-offset: 4px; }
+
+/* ============================================================
+   ROOM 1 — THE PLAQUE (faithful to production umbrella.css)
+   ============================================================ */
+.plaque {
+  width: 100%; height: 100%;
+  background: var(--plaque-paper);
+  color: var(--plaque-ink);
+  font-family: var(--plaque-font-body);
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+  padding: 188px var(--plaque-s-5) 40px;
+  position: relative; isolation: isolate;
+}
+
+.plaque-wordmark {
+  font-family: var(--plaque-font-wordmark);
+  font-size: 248px;
+  line-height: 0.92; letter-spacing: -0.02em; text-align: center; margin: 0;
+  user-select: none; cursor: pointer;
+  font-variation-settings: var(--plaque-mark-rest);
+  transition: font-variation-settings var(--plaque-t-base);
+  contain: layout;
+}
+.plaque-wordmark__given, .plaque-wordmark__family { display: block; }
+.plaque[data-active="true"] .plaque-wordmark { font-variation-settings: var(--plaque-mark-active); }
+
+@keyframes plaque-pulse {
+  0%   { font-variation-settings: "opsz" 144, "wdth" 125, "wght" 800; animation-timing-function: ease-in; }
+  50%  { font-variation-settings: "opsz" 144, "wdth" 125, "wght" 100; animation-timing-function: cubic-bezier(.34, 1.56, .64, 1); }
+  100% { font-variation-settings: "opsz" 144, "wdth" 125, "wght" 800; }
+}
+.plaque[data-pulsing="true"] .plaque-wordmark { animation: plaque-pulse 700ms; }
+@media (prefers-reduced-motion: reduce) {
+  .plaque[data-pulsing="true"] .plaque-wordmark { animation-duration: 0ms; }
+}
+
+.plaque-section-line {
+  display: flex; flex-wrap: wrap; align-items: baseline; justify-content: center;
+  gap: 0 var(--plaque-s-4); margin-top: var(--plaque-s-7);
+}
+.plaque-section {
+  font-family: var(--plaque-font-body); font-size: var(--plaque-size-section);
+  font-weight: 500;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--plaque-ink);
+  text-decoration: none; transition: opacity var(--plaque-t-fast);
+}
+.plaque-section:hover, .plaque-section:focus-visible { opacity: 0.6; }
+.plaque-section:focus-visible { outline: 1px solid var(--plaque-ink); outline-offset: 4px; }
+.plaque-section-sep { color: var(--plaque-ink-3); font-size: var(--plaque-size-section); }
+
+.plaque-meta { min-height: 1.5em; margin-top: var(--plaque-s-5); }
+.plaque-meta__text {
+  margin: 0; font-family: var(--plaque-font-body); font-size: var(--plaque-size-meta);
+  letter-spacing: 0.12em; text-transform: uppercase; color: var(--plaque-ink-3);
+  opacity: 0; transition: opacity var(--plaque-t-base); text-align: center;
+}
+.plaque-meta__text[data-visible="true"] { opacity: 1; }
+
+.plaque-copy {
+  margin: var(--plaque-s-6) 0 0; font-family: var(--plaque-font-body);
+  font-size: var(--plaque-size-copy); color: var(--plaque-ink-3);
+  text-align: center; max-width: 60ch;
+}
+
+.plaque-colophon {
+  display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline;
+  gap: 0 var(--plaque-s-4); width: 100%; margin-top: auto; padding-top: var(--plaque-s-8);
+  font-family: var(--plaque-font-body); font-size: var(--plaque-size-colophon);
+  letter-spacing: 0.04em; text-transform: uppercase; color: var(--plaque-ink-3);
+}
+.plaque-colophon__sep { color: var(--plaque-ink-3); }
+.plaque-colophon a { color: var(--plaque-ink-2); text-decoration: none; transition: opacity var(--plaque-t-fast); }
+.plaque-colophon a:hover, .plaque-colophon a:focus-visible { opacity: 0.6; }
+
+/* theme toggle — fixed top-right, 28×28, 1px ink border, squared */
+.plaque-chrome { position: absolute; top: var(--plaque-s-5); right: var(--plaque-s-5); z-index: 30; }
+.theme-toggle {
+  display: grid; place-items: center;
+  width: 28px; height: 28px;
+  background: transparent;
+  border: 1px solid var(--plaque-ink);
+  color: var(--plaque-ink);
+  border-radius: 0; cursor: pointer; padding: 0;
+  transition: opacity var(--plaque-t-fast);
+}
+.theme-toggle:hover, .theme-toggle:focus-visible { opacity: 0.6; }
+.theme-toggle:focus-visible { outline: 1px solid var(--plaque-ink); outline-offset: 3px; }
+.theme-toggle svg { width: 12px; height: 12px; }
+.theme-toggle .icon-sun { display: none; }
+.theme-toggle .icon-moon { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+/* ============================================================
+   ROOM 2 — BOTANICAL (line-art flora: draw-on, then sway)
+   ============================================================ */
+.room2 { position: relative; overflow: hidden; }
+.room2-flora {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  z-index: 0; pointer-events: none; overflow: visible;
+}
+.room2 .plaque-wordmark { position: relative; z-index: 1; }
+
+.room2-flora .ln {
+  fill: none;
+  stroke: var(--plaque-ink);
+  stroke-width: 1.5;
+  stroke-linecap: round; stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  stroke-dasharray: 1; stroke-dashoffset: 1;
+}
+/* draw + sway start only once Room 2 becomes the active slide */
+.carousel-slide.r2-grow .room2-flora .ln {
+  animation: r2draw var(--dur, 4s) ease-out var(--del, 0s) forwards;
+}
+@keyframes r2draw { to { stroke-dashoffset: 0; } }
+
+.sway { transform-box: view-box; transform: rotate(0deg); }
+.carousel-slide.r2-grow .sway {
+  animation: r2sway var(--swd, 9s) ease-in-out var(--swdel, 6s) infinite;
+}
+.sway-monstera { transform-origin: 120px 888px;  --swd: 8s;  --swdel: 6s; }
+.sway-banana   { transform-origin: 1402px 16px;  --swd: 9s;  --swdel: 8s; }
+.sway-fern     { transform-origin: 1388px 898px; --swd: 10s; --swdel: 7s; }
+@keyframes r2sway {
+  0%   { transform: rotate(0deg); }
+  25%  { transform: rotate(2deg); }
+  50%  { transform: rotate(0deg); }
+  75%  { transform: rotate(-2deg); }
+  100% { transform: rotate(0deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .room2-flora .ln,
+  .carousel-slide.r2-grow .room2-flora .ln { animation: none; stroke-dashoffset: 0; }
+  .sway, .carousel-slide.r2-grow .sway { animation: none; }
+}
+
+/* ---- Room 2 — Day & Night atmosphere (exact spec palette, scoped) ---- */
+:root[data-theme="light"] .room2 { --plaque-paper: #fdfbf5; --plaque-ink: #1a1612; background: #fdfbf5; }
+:root[data-theme="dark"]  .room2 { --plaque-paper: #1a1612; --plaque-ink: #fdfbf5; background: #1a1612; }
+
+.room2-bird, .room2-night {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; overflow: visible;
+}
+.room2-bird  { z-index: 3; }
+.room2-night { z-index: 2; }
+.room2-bird path {
+  fill: none; stroke: var(--plaque-ink); stroke-width: 1.5;
+  stroke-linecap: round; stroke-linejoin: round; vector-effect: non-scaling-stroke;
+}
+/* bird is a day element; night creatures are dark-only */
+:root[data-theme="dark"]  .room2-bird  { display: none; }
+:root[data-theme="light"] .room2-night { display: none; }
+
+.r2-eye  { fill: var(--plaque-ink); transform-box: fill-box; transform-origin: center; }
+.r2-eyes { transition: opacity .5s ease; }
+.r2-bug  { animation: r2bugPulse 4s ease-in-out infinite; }
+@keyframes r2bugPulse { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .r2-bug { animation: none; opacity: .85; } }
+
+/* ============================================================
+   ROOM 3 — LUNAR (night; the cream canvas finally breaks)
+   ============================================================ */
+.room3 { background: #0a0807; color: #fdfbf5; overflow: hidden; }
+.room3-sky {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  z-index: 0; pointer-events: none;
+}
+.room3-surface {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 25%;
+  background: linear-gradient(to bottom, rgba(28,23,20,0) 0%, rgba(28,23,20,0.5) 55%, #1c1714 100%);
+  z-index: 0; pointer-events: none;
+}
+.room3-surface::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: rgba(253,251,245,0.05);
+}
+.room3-wordmark { position: relative; z-index: 1; color: #fdfbf5; }
+.room3 .r3-line { display: block; }
+.room3 .g { display: inline-block; transform-origin: 50% 50%; }
+/* untouched anchors: L, u, d (no transform) */
+.room3 .g-c  { transform: translate(26px, -80px) rotate(12deg); }
+.room3 .g-a  { opacity: 0; }                              /* escaped upward */
+.room3 .g-s  { transform: translate(60px, -150px) rotate(-25deg); }
+.room3 .g-R  { transform: translate(0, -20px) rotate(3deg); }
+.room3 .g-e1 { transform: translate(0, 120px) rotate(45deg); }
+.room3 .g-e2 { transform: translate(-676px, 278px) rotate(90deg); } /* landed bottom-left on the regolith */
+
+/* carousel dots invert to pure cream when Room 3 is active */
+.carousel-dots.dots-on-night .carousel-dot { color: #fdfbf5; }
+
+/* ============================================================
+   ROOM 4 — MICROSCOPY (lit circular viewport on a dim warm field)
+   ============================================================ */
+.room4 { background: #1c1714; overflow: hidden; justify-content: center; padding-top: 0; padding-bottom: 0; }
+/* dim warm field — darkest at corners, slightly warmer toward the lens */
+.room4-field {
+  position: absolute; inset: 0; z-index: 0; pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, #1c1714 0%, #1c1714 34%, #15110d 70%, #0f0c0a 100%);
+}
+/* blurred unfocused slide haze ringing the lens */
+.room4-haze {
+  position: absolute; left: 50%; top: 50%; z-index: 1; pointer-events: none;
+  width: 900px; height: 900px; transform: translate(-50%, -50%);
+  background: radial-gradient(circle 450px at 50% 50%,
+    rgba(253,251,245,0) 71%,
+    rgba(253,251,245,0.11) 80%,
+    rgba(253,251,245,0.05) 88%,
+    rgba(253,251,245,0) 100%);
+  filter: blur(12px);
+}
+/* the lit viewport — soft luminous falloff, no drawn ring */
+.room4-lens {
+  position: absolute; left: 50%; top: 50%; z-index: 2; pointer-events: none;
+  width: 660px; height: 660px; transform: translate(-50%, -50%);
+  background: radial-gradient(circle 330px at 50% 50%,
+    #fefdf8 0%,
+    #fdfbf5 60%,
+    #fdfbf5 72.7%,
+    rgba(253,251,245,0) 97%);
+}
+.room4-orgs { position: absolute; inset: 0; z-index: 3; width: 100%; height: 100%; pointer-events: none; }
+.room4-wordmark {
+  position: relative; z-index: 4; color: #1a1612;
+  font-size: 150px;
+}
+
+/* paramecium — gentle leftward arc drift, no rotation, 12s */
+.r4-para-drift { animation: r4paraDrift 12s ease-in-out infinite; }
+@keyframes r4paraDrift {
+  0%   { transform: translate(0px, 0px); }
+  50%  { transform: translate(-26px, -14px); }
+  100% { transform: translate(0px, 0px); }
+}
+/* diatom — slow spin in place, 30s */
+.r4-diatom-spin { transform-box: fill-box; transform-origin: center; animation: r4spin 30s linear infinite; }
+@keyframes r4spin { to { transform: rotate(360deg); } }
+/* tardigrade — amble left->right across viewport bottom, 20s, blur near edges */
+.r4-tardi-cross { animation: r4tardiCross 20s linear infinite; }
+@keyframes r4tardiCross {
+  0%   { transform: translateX(430px);  filter: blur(4px); }
+  12%  { filter: blur(0px); }
+  88%  { filter: blur(0px); }
+  100% { transform: translateX(1010px); filter: blur(4px); }
+}
+/* tardigrade legs — alternate-step articulation */
+.r4-leg { transform-box: fill-box; }
+.r4-leg-0 { animation: r4leg 1.4s ease-in-out infinite; }
+.r4-leg-1 { animation: r4leg 1.4s ease-in-out infinite; animation-delay: -0.7s; }
+@keyframes r4leg {
+  0%,100% { transform: rotate(-7deg); }
+  50%     { transform: rotate(7deg); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .r4-para-drift, .r4-diatom-spin, .r4-tardi-cross, .r4-leg { animation: none; }
+  .r4-tardi-cross { transform: translateX(660px); }
+}
+
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="frame" id="frame">
+    <div class="carousel" id="carousel">
+      <div class="carousel-track" id="track">
+
+        <section class="carousel-slide" data-screen-label="Room 1">
+    <main class="plaque" id="plaque" data-screen-label="umbrella">
+      <div class="plaque-chrome">
+        <button class="theme-toggle" id="toggle" type="button" aria-label="Toggle theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+
+      <h1 class="plaque-wordmark" id="wordmark">
+        <span class="plaque-wordmark__given">Lucas</span>
+        <span class="plaque-wordmark__family">Reed</span>
+      </h1>
+
+      <nav class="plaque-section-line" aria-label="Sections" id="sections">
+        <a class="plaque-section" href="#" data-path="/tech" data-meta="/tech · latest post — 3 days ago · engineering, infrastructure, writing.">/tech</a>
+        <span class="plaque-section-sep" aria-hidden="true">·</span>
+        <a class="plaque-section" href="#" data-path="/news" data-meta="/news · latest brief — yesterday · daily briefs.">/news</a>
+        <span class="plaque-section-sep" aria-hidden="true">·</span>
+        <a class="plaque-section" href="#" data-path="/cobalt-paper" data-meta="/cobalt-paper · last updated — 2 weeks ago · generative work.">/cobalt-paper</a>
+      </nav>
+
+      <div class="plaque-meta" aria-live="polite">
+        <p class="plaque-meta__text" id="meta"></p>
+      </div>
+
+      <p class="plaque-copy">A personal index of small sites — engineering, generative work, daily briefs.</p>
+
+      <footer class="plaque-colophon">
+        <a href="mailto:hi@lucasreed.me">hi@lucasreed.me</a>
+        <span class="plaque-colophon__sep" aria-hidden="true">·</span>
+        <a href="https://github.com/LucasGeno" rel="me">GitHub</a>
+        <span class="plaque-colophon__sep" aria-hidden="true">·</span>
+        <a href="#">RSS</a>
+      </footer>
+    </main>
+        </section>
+
+        <section class="carousel-slide" data-screen-label="Room 2">
+          <main class="plaque room2" data-screen-label="botanical">
+            <svg class="room2-flora" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+              <g class="sway sway-monstera">
+                <path class="ln" pathLength="1" style="--dur:1.6s;--del:0s" d="M 12 904 C 70 898 116 892 150 884"/>
+                <g transform="translate(150,884) rotate(-22)">
+                  <path class="ln" pathLength="1" style="--dur:3.4s;--del:0s" d="M 0 0 C 6.22 -1.59 27.8 -6.35 37.33 -9.52 C 46.87 -12.7 52.23 -15.87 57.2 -19.05 C 62.17 -22.22 65.09 -25.4 67.16 -28.57 C 69.23 -31.75 68.74 -34.92 69.61 -38.1 C 70.48 -41.27 70.12 -44.44 72.35 -47.62 C 74.58 -50.79 78 -53.97 82.97 -57.14 C 87.94 -60.32 95.61 -63.49 102.17 -66.67 C 108.73 -69.84 117.15 -73.02 122.34 -76.19 C 127.53 -79.37 131.9 -82.54 133.32 -85.71 C 134.73 -88.89 132.93 -92.06 130.84 -95.24 C 128.75 -98.41 123.39 -101.59 120.79 -104.76 C 118.19 -107.94 114.85 -111.11 115.23 -114.29 C 115.62 -117.46 118.51 -120.63 123.09 -123.81 C 127.66 -126.98 136.12 -130.16 142.68 -133.33 C 149.25 -136.51 157.97 -139.68 162.5 -142.86 C 167.04 -146.03 170.13 -149.21 169.87 -152.38 C 169.61 -155.56 165.25 -158.73 160.93 -161.9 C 156.62 -165.08 148.59 -168.25 144 -171.43 C 139.4 -174.6 134.32 -177.78 133.37 -180.95 C 132.43 -184.13 134.59 -187.3 138.34 -190.48 C 142.1 -193.65 150.12 -196.83 155.88 -200 C 161.64 -203.17 169.49 -206.35 172.88 -209.52 C 176.27 -212.7 177.89 -215.87 176.23 -219.05 C 174.58 -222.22 168.59 -225.4 162.92 -228.57 C 157.25 -231.75 147.97 -234.92 142.22 -238.1 C 136.47 -241.27 130.49 -244.44 128.44 -247.62 C 126.38 -250.79 127.5 -253.97 129.88 -257.14 C 132.25 -260.32 138.64 -263.49 142.68 -266.67 C 146.73 -269.84 152.48 -273.02 154.17 -276.19 C 155.86 -279.37 155.69 -282.54 152.81 -285.71 C 149.94 -288.89 143.16 -292.06 136.92 -295.24 C 130.68 -298.41 121.49 -301.59 115.37 -304.76 C 109.25 -307.94 103.23 -311.11 100.21 -314.29 C 97.19 -317.46 96.93 -320.63 97.26 -323.81 C 97.58 -326.98 100.94 -330.16 102.17 -333.33 C 103.4 -336.51 105.52 -339.68 104.64 -342.86 C 103.76 -346.03 101.12 -349.21 96.89 -352.38 C 92.67 -355.56 85.63 -358.73 79.29 -361.9 C 72.96 -365.08 65.04 -368.25 58.88 -371.43 C 52.73 -374.6 47.29 -377.78 42.35 -380.95 C 37.41 -384.13 35.4 -387.3 29.24 -390.48 C 23.08 -393.65 11.16 -398.41 5.39 -400 C -0.38 -401.59 -0.12 -401.59 -5.39 -400 C -10.66 -398.41 -21.08 -393.65 -26.25 -390.48 C -31.42 -387.3 -32.43 -384.13 -36.39 -380.95 C -40.34 -377.78 -44.8 -374.6 -49.98 -371.43 C -55.17 -368.25 -62.12 -365.08 -67.5 -361.9 C -72.89 -358.73 -78.98 -355.56 -82.28 -352.38 C -85.58 -349.21 -87.31 -346.03 -87.29 -342.86 C -87.27 -339.68 -84.26 -336.51 -82.17 -333.33 C -80.07 -330.16 -75.87 -326.98 -74.73 -323.81 C -73.58 -320.63 -73.03 -317.46 -75.27 -314.29 C -77.51 -311.11 -82.78 -307.94 -88.16 -304.76 C -93.55 -301.59 -102.03 -298.41 -107.6 -295.24 C -113.16 -292.06 -119.28 -288.89 -121.54 -285.71 C -123.79 -282.54 -123.37 -279.37 -121.12 -276.19 C -118.87 -273.02 -112.59 -269.84 -108.04 -266.67 C -103.5 -263.49 -96.65 -260.32 -93.84 -257.14 C -91.03 -253.97 -89.51 -250.79 -91.2 -247.62 C -92.9 -244.44 -98.54 -241.27 -104 -238.1 C -109.45 -234.92 -118.48 -231.75 -123.92 -228.57 C -129.37 -225.4 -135.17 -222.22 -136.68 -219.05 C -138.19 -215.87 -136.46 -212.7 -132.99 -209.52 C -129.52 -206.35 -121.64 -203.17 -115.88 -200 C -110.12 -196.83 -102.13 -193.65 -98.46 -190.48 C -94.78 -187.3 -92.73 -184.13 -93.82 -180.95 C -94.91 -177.78 -100.19 -174.6 -105 -171.43 C -109.82 -168.25 -118.1 -165.08 -122.71 -161.9 C -127.32 -158.73 -132.01 -155.56 -132.64 -152.38 C -133.26 -149.21 -130.56 -146.03 -126.47 -142.86 C -122.37 -139.68 -114.11 -136.51 -108.04 -133.33 C -101.97 -130.16 -94.05 -126.98 -90.04 -123.81 C -86.03 -120.63 -83.72 -117.46 -83.96 -114.29 C -84.2 -111.11 -88.19 -107.94 -91.46 -104.76 C -94.74 -101.59 -100.81 -98.41 -103.63 -95.24 C -106.45 -92.06 -109.01 -88.89 -108.38 -85.71 C -107.74 -82.54 -104.17 -79.37 -99.81 -76.19 C -95.44 -73.02 -87.87 -69.84 -82.17 -66.67 C -76.47 -63.49 -69.69 -60.32 -65.62 -57.14 C -61.55 -53.97 -59.04 -50.79 -57.74 -47.62 C -56.44 -44.44 -57.73 -41.27 -57.82 -38.1 C -57.91 -34.92 -59.35 -31.75 -58.26 -28.57 C -57.16 -25.4 -55.23 -22.22 -51.24 -19.05 C -47.26 -15.87 -42.88 -12.7 -34.34 -9.52 C -25.8 -6.35 -5.72 -1.59 0 0 C 5.72 1.59 -6.22 1.59 0 0 Z"/>
+                  <path class="ln" pathLength="1" style="--dur:2.6s;--del:0.4s" d="M 0 0 C 0.86 -5.56 3.51 -22.22 5.18 -33.33 C 6.84 -44.44 8.51 -55.56 10 -66.67 C 11.49 -77.78 12.92 -88.89 14.14 -100 C 15.36 -111.11 16.46 -122.22 17.32 -133.33 C 18.18 -144.44 18.87 -155.56 19.32 -166.67 C 19.77 -177.78 20 -188.89 20 -200 C 20 -211.11 19.77 -222.22 19.32 -233.33 C 18.87 -244.44 18.18 -255.56 17.32 -266.67 C 16.46 -277.78 15.36 -288.89 14.14 -300 C 12.92 -311.11 11.49 -322.22 10 -333.33 C 8.51 -344.44 6.84 -355.56 5.18 -366.67 C 3.51 -377.78 0.86 -394.44 0 -400"/>
+                  <path class="ln" pathLength="1" style="--dur:1.2s;--del:1s" d="M 11.76 -80 C 20.87 -83.03 48.87 -98.2 66.47 -98.2 C 84.07 -98.2 108.87 -83.03 117.36 -80"/>
+                  <path class="ln" pathLength="1" style="--dur:1.2s;--del:1.06s" d="M 11.76 -80 C 3.27 -83.03 -21.53 -98.2 -39.13 -98.2 C -56.73 -98.2 -84.73 -83.03 -93.84 -80"/>
+                  <path class="ln" pathLength="1" style="--dur:1.2s;--del:1.1400000000000001s" d="M 17.53 -136 C 28.67 -139.03 62.38 -154.2 84.39 -154.2 C 106.4 -154.2 138.72 -139.03 149.59 -136"/>
+                  <path class="ln" pathLength="1" style="--dur:1.2s;--del:1.2000000000000002s" d="M 17.53 -136 C 6.66 -139.03 -25.66 -154.2 -47.67 -154.2 C -69.68 -154.2 -103.39 -139.03 -114.54 -136"/>
+                  <path class="ln" pathLength="1" style="--dur:1.2s;--del:1.28s" d="M 19.96 -192 C 31.73 -195.03 66.91 -210.2 90.58 -210.2 C 114.26 -210.2 150.1 -195.03 162 -192"/>
+                  <path class="ln" pathLength="1" style="--dur:1.2s;--del:1.34s" d="M 19.96 -192 C 8.06 -195.03 -27.79 -210.2 -51.46 -210.2 C -75.13 -210.2 -110.31 -195.03 -122.08 -192"/>
+                  <path class="ln" pathLength="1" style="--dur:1.2s;--del:1.42s" d="M 18.6 -248 C 29.71 -251.03 62.54 -266.2 85.3 -266.2 C 108.05 -266.2 143.48 -251.03 155.11 -248"/>
+                  <path class="ln" pathLength="1" style="--dur:1.2s;--del:1.48s" d="M 18.6 -248 C 6.96 -251.03 -28.47 -266.2 -51.22 -266.2 C -73.98 -266.2 -106.81 -251.03 -117.92 -248"/>
+                  <path class="ln" pathLength="1" style="--dur:1.2s;--del:1.56s" d="M 13.69 -304 C 22.87 -307.03 49.61 -322.2 68.77 -322.2 C 87.94 -322.2 118.71 -307.03 128.7 -304"/>
+                  <path class="ln" pathLength="1" style="--dur:1.2s;--del:1.62s" d="M 13.69 -304 C 3.7 -307.03 -27.07 -322.2 -46.23 -322.2 C -65.4 -322.2 -92.14 -307.03 -101.32 -304"/>
+                  <path class="ln" pathLength="1" style="--dur:1s;--del:1.7s" d="M 97.37 -128 C 97.37 -124.17 96.97 -120.06 96.27 -116.52 C 95.57 -112.98 94.45 -109.49 93.16 -106.79 C 91.86 -104.08 90.19 -101.75 88.5 -100.28 C 86.8 -98.82 84.83 -98 83 -98 C 81.16 -98 79.19 -98.82 77.5 -100.28 C 75.8 -101.75 74.13 -104.08 72.83 -106.79 C 71.54 -109.49 70.42 -112.98 69.72 -116.52 C 69.02 -120.06 68.62 -124.17 68.62 -128 C 68.62 -131.83 69.02 -135.94 69.72 -139.48 C 70.42 -143.02 71.54 -146.51 72.83 -149.21 C 74.13 -151.92 75.8 -154.25 77.5 -155.72 C 79.19 -157.18 81.16 -158 83 -158 C 84.83 -158 86.8 -157.18 88.5 -155.72 C 90.19 -154.25 91.86 -151.92 93.16 -149.21 C 94.45 -146.51 95.57 -143.02 96.27 -139.48 C 96.97 -135.94 97.37 -131.83 97.37 -128 Z"/>
+                  <path class="ln" pathLength="1" style="--dur:1s;--del:1.78s" d="M -34.85 -128 C -34.85 -124.17 -35.24 -120.06 -35.94 -116.52 C -36.65 -112.98 -37.76 -109.49 -39.06 -106.79 C -40.36 -104.08 -42.03 -101.75 -43.72 -100.28 C -45.42 -98.82 -47.39 -98 -49.22 -98 C -51.06 -98 -53.03 -98.82 -54.72 -100.28 C -56.42 -101.75 -58.09 -104.08 -59.38 -106.79 C -60.68 -109.49 -61.8 -112.98 -62.5 -116.52 C -63.2 -120.06 -63.59 -124.17 -63.59 -128 C -63.59 -131.83 -63.2 -135.94 -62.5 -139.48 C -61.8 -143.02 -60.68 -146.51 -59.38 -149.21 C -58.09 -151.92 -56.42 -154.25 -54.72 -155.72 C -53.03 -157.18 -51.06 -158 -49.22 -158 C -47.39 -158 -45.42 -157.18 -43.72 -155.72 C -42.03 -154.25 -40.36 -151.92 -39.06 -149.21 C -37.76 -146.51 -36.65 -143.02 -35.94 -139.48 C -35.24 -135.94 -34.85 -131.83 -34.85 -128 Z"/>
+                  <path class="ln" pathLength="1" style="--dur:1s;--del:1.8599999999999999s" d="M 108.45 -196 C 108.45 -192.17 108.01 -188.06 107.24 -184.52 C 106.47 -180.98 105.24 -177.49 103.82 -174.79 C 102.39 -172.08 100.56 -169.75 98.69 -168.28 C 96.83 -166.82 94.66 -166 92.65 -166 C 90.64 -166 88.47 -166.82 86.61 -168.28 C 84.74 -169.75 82.91 -172.08 81.48 -174.79 C 80.06 -177.49 78.83 -180.98 78.06 -184.52 C 77.29 -188.06 76.85 -192.17 76.85 -196 C 76.85 -199.83 77.29 -203.94 78.06 -207.48 C 78.83 -211.02 80.06 -214.51 81.48 -217.21 C 82.91 -219.92 84.74 -222.25 86.61 -223.72 C 88.47 -225.18 90.64 -226 92.65 -226 C 94.66 -226 96.83 -225.18 98.69 -223.72 C 100.56 -222.25 102.39 -219.92 103.82 -217.21 C 105.24 -214.51 106.47 -211.02 107.24 -207.48 C 108.01 -203.94 108.45 -199.83 108.45 -196 Z"/>
+                  <path class="ln" pathLength="1" style="--dur:1s;--del:1.94s" d="M -36.87 -196 C -36.87 -192.17 -37.31 -188.06 -38.08 -184.52 C -38.85 -180.98 -40.08 -177.49 -41.5 -174.79 C -42.93 -172.08 -44.76 -169.75 -46.63 -168.28 C -48.49 -166.82 -50.65 -166 -52.67 -166 C -54.68 -166 -56.85 -166.82 -58.71 -168.28 C -60.58 -169.75 -62.41 -172.08 -63.84 -174.79 C -65.26 -177.49 -66.49 -180.98 -67.26 -184.52 C -68.03 -188.06 -68.47 -192.17 -68.47 -196 C -68.47 -199.83 -68.03 -203.94 -67.26 -207.48 C -66.49 -211.02 -65.26 -214.51 -63.84 -217.21 C -62.41 -219.92 -60.58 -222.25 -58.71 -223.72 C -56.85 -225.18 -54.68 -226 -52.67 -226 C -50.65 -226 -48.49 -225.18 -46.63 -223.72 C -44.76 -222.25 -42.93 -219.92 -41.5 -217.21 C -40.08 -214.51 -38.85 -211.02 -38.08 -207.48 C -37.31 -203.94 -36.87 -199.83 -36.87 -196 Z"/>
+                  <path class="ln" pathLength="1" style="--dur:1s;--del:2.02s" d="M 100.76 -260 C 100.76 -256.17 100.36 -252.06 99.64 -248.52 C 98.91 -244.98 97.76 -241.49 96.42 -238.79 C 95.09 -236.08 93.37 -233.75 91.62 -232.28 C 89.87 -230.82 87.84 -230 85.95 -230 C 84.06 -230 82.03 -230.82 80.28 -232.28 C 78.54 -233.75 76.81 -236.08 75.48 -238.79 C 74.14 -241.49 72.99 -244.98 72.27 -248.52 C 71.54 -252.06 71.14 -256.17 71.14 -260 C 71.14 -263.83 71.54 -267.94 72.27 -271.48 C 72.99 -275.02 74.14 -278.51 75.48 -281.21 C 76.81 -283.92 78.54 -286.25 80.28 -287.72 C 82.03 -289.18 84.06 -290 85.95 -290 C 87.84 -290 89.87 -289.18 91.62 -287.72 C 93.37 -286.25 95.09 -283.92 96.42 -281.21 C 97.76 -278.51 98.91 -275.02 99.64 -271.48 C 100.36 -267.94 100.76 -263.83 100.76 -260 Z"/>
+                  <path class="ln" pathLength="1" style="--dur:1s;--del:2.1s" d="M -35.5 -260 C -35.5 -256.17 -35.9 -252.06 -36.63 -248.52 C -37.35 -244.98 -38.5 -241.49 -39.84 -238.79 C -41.17 -236.08 -42.9 -233.75 -44.64 -232.28 C -46.39 -230.82 -48.42 -230 -50.31 -230 C -52.2 -230 -54.23 -230.82 -55.98 -232.28 C -57.72 -233.75 -59.45 -236.08 -60.78 -238.79 C -62.12 -241.49 -63.27 -244.98 -64 -248.52 C -64.72 -252.06 -65.12 -256.17 -65.12 -260 C -65.12 -263.83 -64.72 -267.94 -64 -271.48 C -63.27 -275.02 -62.12 -278.51 -60.78 -281.21 C -59.45 -283.92 -57.72 -286.25 -55.98 -287.72 C -54.23 -289.18 -52.2 -290 -50.31 -290 C -48.42 -290 -46.39 -289.18 -44.64 -287.72 C -42.9 -286.25 -41.17 -283.92 -39.84 -281.21 C -38.5 -278.51 -37.35 -275.02 -36.63 -271.48 C -35.9 -267.94 -35.5 -263.83 -35.5 -260 Z"/>
+                </g>
+              </g>
+              <g class="sway sway-banana">
+                <path class="ln" pathLength="1" style="--dur:1.2s;--del:1s" d="M 1440 6 C 1410 12 1390 16 1372 22"/>
+                <g transform="translate(1372,22) rotate(229)">
+                  <path class="ln" pathLength="1" style="--dur:3.6s;--del:1s" d="M 0 0 C 4.09 -3.59 17.04 -14.36 24.53 -21.54 C 32.02 -28.72 38.4 -35.9 44.92 -43.08 C 51.44 -50.26 57.63 -57.44 63.63 -64.62 C 69.62 -71.79 75.38 -78.97 80.9 -86.15 C 86.42 -93.33 91.72 -100.51 96.76 -107.69 C 101.81 -114.87 106.62 -122.05 111.15 -129.23 C 115.69 -136.41 119.98 -143.59 123.98 -150.77 C 127.98 -157.95 131.72 -165.13 135.15 -172.31 C 138.58 -179.49 141.74 -186.67 144.58 -193.85 C 147.42 -201.03 157.25 -208.21 152.18 -215.38 C 147.11 -222.56 112.58 -229.74 114.16 -236.92 C 115.74 -244.1 153.44 -251.28 161.65 -258.46 C 169.86 -265.64 163.17 -272.82 163.43 -280 C 163.69 -287.18 163.62 -294.36 163.21 -301.54 C 162.81 -308.72 162.07 -315.9 161 -323.08 C 159.92 -330.26 158.52 -337.44 156.79 -344.62 C 155.07 -351.79 159.34 -358.97 150.64 -366.15 C 141.94 -373.33 107.59 -380.51 104.6 -387.69 C 101.61 -394.87 129.97 -402.05 132.72 -409.23 C 135.46 -416.41 125.24 -423.59 121.08 -430.77 C 116.92 -437.95 112.47 -445.13 107.76 -452.31 C 103.06 -459.49 98.08 -466.67 92.84 -473.85 C 87.61 -481.03 82.12 -488.21 76.37 -495.38 C 70.61 -502.56 64.64 -509.74 58.32 -516.92 C 51.99 -524.1 45.62 -531.28 38.41 -538.46 C 31.21 -545.64 19.27 -556.41 15.09 -560 C 10.91 -563.59 15.96 -563.59 13.33 -560 C 10.71 -556.41 3.51 -545.64 -0.66 -538.46 C -4.83 -531.28 -8.22 -524.1 -11.67 -516.92 C -15.13 -509.74 -18.31 -502.56 -21.4 -495.38 C -24.48 -488.21 -27.4 -481.03 -30.19 -473.85 C -32.99 -466.67 -35.64 -459.49 -38.17 -452.31 C -40.7 -445.13 -43.1 -437.95 -45.36 -430.77 C -47.63 -423.59 -49.77 -416.41 -51.78 -409.23 C -53.78 -402.05 -55.66 -394.87 -57.39 -387.69 C -59.12 -380.51 -60.72 -373.33 -62.17 -366.15 C -63.63 -358.97 -64.94 -351.79 -66.11 -344.62 C -67.27 -337.44 -68.29 -330.26 -69.16 -323.08 C -70.03 -315.9 -70.75 -308.72 -71.32 -301.54 C -71.89 -294.36 -72.31 -287.18 -72.57 -280 C -72.83 -272.82 -72.93 -265.64 -72.88 -258.46 C -72.83 -251.28 -72.63 -244.1 -72.27 -236.92 C -71.91 -229.74 -71.39 -222.56 -70.72 -215.38 C -70.05 -208.21 -69.22 -201.03 -68.24 -193.85 C -67.26 -186.67 -66.12 -179.49 -64.83 -172.31 C -63.55 -165.13 -62.11 -157.95 -60.52 -150.77 C -58.92 -143.59 -57.18 -136.41 -55.29 -129.23 C -53.4 -122.05 -51.36 -114.87 -49.17 -107.69 C -46.98 -100.51 -44.64 -93.33 -42.13 -86.15 C -39.63 -78.97 -36.99 -71.79 -34.14 -64.62 C -31.3 -57.44 -28.34 -50.26 -25.07 -43.08 C -21.8 -35.9 -18.72 -28.72 -14.54 -21.54 C -10.37 -14.36 -2.42 -3.59 0 0 C 2.42 3.59 -4.09 3.59 0 0 Z"/>
+                  <path class="ln" pathLength="1" style="--dur:3s;--del:1.6s" d="M 0 0 C 1.79 -7.78 7.26 -31.11 10.74 -46.67 C 14.22 -62.22 17.69 -77.78 20.88 -93.33 C 24.07 -108.89 27.15 -124.44 29.87 -140 C 32.6 -155.56 35.11 -171.11 37.21 -186.67 C 39.32 -202.22 41.13 -217.78 42.5 -233.33 C 43.87 -248.89 44.87 -264.44 45.43 -280 C 45.99 -295.56 46.14 -311.11 45.86 -326.67 C 45.58 -342.22 44.85 -357.78 43.75 -373.33 C 42.64 -388.89 41.09 -404.44 39.22 -420 C 37.35 -435.56 35.06 -451.11 32.53 -466.67 C 30 -482.22 27.09 -497.78 24.03 -513.33 C 20.98 -528.89 15.85 -552.22 14.21 -560"/>
+                  <path class="ln" pathLength="1" style="--dur:1.3s;--del:2.3s" d="M 26.8 -123.2 C 33.39 -128.43 54.81 -154.56 66.34 -154.56 C 77.88 -154.56 91.07 -128.43 96.01 -123.2"/>
+                  <path class="ln" pathLength="1" style="--dur:1.3s;--del:2.3699999999999997s" d="M 26.8 -123.2 C 21.86 -128.43 8.67 -154.56 -2.86 -154.56 C -14.4 -154.56 -35.81 -128.43 -42.4 -123.2"/>
+                  <path class="ln" pathLength="1" style="--dur:1.3s;--del:2.4499999999999997s" d="M 40.45 -212.8 C 48.75 -218.03 74.37 -244.16 90.27 -244.16 C 106.17 -244.16 128.24 -218.03 135.84 -212.8"/>
+                  <path class="ln" pathLength="1" style="--dur:1.3s;--del:2.5199999999999996s" d="M 40.45 -212.8 C 32.85 -218.03 10.78 -244.16 -5.12 -244.16 C -21.02 -244.16 -46.64 -218.03 -54.94 -212.8"/>
+                  <path class="ln" pathLength="1" style="--dur:1.3s;--del:2.5999999999999996s" d="M 45.96 -302.4 C 54.17 -307.63 78.45 -333.76 95.25 -333.76 C 112.05 -333.76 138.17 -307.63 146.75 -302.4"/>
+                  <path class="ln" pathLength="1" style="--dur:1.3s;--del:2.6699999999999995s" d="M 45.96 -302.4 C 37.37 -307.63 11.25 -333.76 -5.55 -333.76 C -22.35 -333.76 -46.63 -307.63 -54.84 -302.4"/>
+                  <path class="ln" pathLength="1" style="--dur:1.3s;--del:2.75s" d="M 42.22 -392 C 48.59 -397.23 66.34 -423.36 80.47 -423.36 C 94.59 -423.36 119.22 -397.23 126.97 -392"/>
+                  <path class="ln" pathLength="1" style="--dur:1.3s;--del:2.82s" d="M 42.22 -392 C 34.47 -397.23 9.84 -423.36 -4.28 -423.36 C -18.41 -423.36 -36.16 -397.23 -42.53 -392"/>
+                  <path class="ln" pathLength="1" style="--dur:1.3s;--del:2.9s" d="M 31.91 -470.4 C 35.44 -475.63 43.99 -501.76 53.08 -501.76 C 62.18 -501.76 80.89 -475.63 86.46 -470.4"/>
+                  <path class="ln" pathLength="1" style="--dur:1.3s;--del:2.9699999999999998s" d="M 31.91 -470.4 C 26.35 -475.63 7.63 -501.76 -1.46 -501.76 C -10.55 -501.76 -19.11 -475.63 -22.64 -470.4"/>
+                </g>
+              </g>
+              <g class="sway sway-fern">
+                <path class="ln" pathLength="1" style="--dur:1s;--del:2s" d="M 1420 904 C 1394 900 1366 898 1342 896"/>
+                <g transform="translate(1342,896) rotate(-26)">
+                  <path class="ln" pathLength="1" style="--dur:2.6s;--del:2s" d="M 0 0 C 0.9 -3.47 3.64 -13.89 5.41 -20.83 C 7.17 -27.78 8.93 -34.72 10.58 -41.67 C 12.22 -48.61 13.82 -55.56 15.28 -62.5 C 16.74 -69.44 18.12 -76.39 19.32 -83.33 C 20.53 -90.28 21.62 -97.22 22.52 -104.17 C 23.42 -111.11 24.17 -118.06 24.73 -125 C 25.28 -131.94 25.67 -138.89 25.86 -145.83 C 26.05 -152.78 26.05 -159.72 25.86 -166.67 C 25.67 -173.61 25.28 -180.56 24.73 -187.5 C 24.17 -194.44 23.42 -201.39 22.52 -208.33 C 21.62 -215.28 20.53 -222.22 19.32 -229.17 C 18.12 -236.11 15.96 -246.53 15.28 -250"/>
+                  <path class="ln" pathLength="1" style="--dur:0.7s;--del:2.9818181818181815s" d="M 5.89 -22.73 C 10.18 -24.05 24.28 -28.49 31.63 -30.64 C 38.98 -32.79 46.92 -34.79 49.98 -35.62"/>
+                  <path class="ln" pathLength="1" style="--dur:0.7s;--del:3.0318181818181813s" d="M 5.89 -22.73 C 2.71 -25.89 -7.7 -36.39 -13.21 -41.71 C -18.71 -47.04 -24.81 -52.51 -27.13 -54.67"/>
+                  <path class="ln" pathLength="1" style="--dur:0.7s;--del:3.1636363636363636s" d="M 11.47 -45.45 C 15.38 -46.76 28.21 -51.15 34.9 -53.28 C 41.59 -55.42 48.84 -57.43 51.62 -58.26"/>
+                  <path class="ln" pathLength="1" style="--dur:0.7s;--del:3.2136363636363634s" d="M 11.47 -45.45 C 8.48 -48.29 -1.3 -57.68 -6.46 -62.44 C -11.63 -67.2 -17.34 -72.08 -19.52 -74.01"/>
+                  <path class="ln" pathLength="1" style="--dur:0.7s;--del:3.3454545454545452s" d="M 16.46 -68.18 C 19.97 -69.49 31.49 -73.9 37.51 -76.06 C 43.52 -78.22 50.05 -80.28 52.55 -81.12"/>
+                  <path class="ln" pathLength="1" style="--dur:0.7s;--del:3.395454545454545s" d="M 16.46 -68.18 C 13.65 -70.66 4.45 -78.89 -0.4 -83.05 C -5.25 -87.21 -10.6 -91.46 -12.65 -93.15"/>
+                  <path class="ln" pathLength="1" style="--dur:0.7s;--del:3.5272727272727273s" d="M 20.59 -90.91 C 23.69 -92.23 33.89 -96.67 39.21 -98.86 C 44.54 -101.05 50.32 -103.17 52.55 -104.03"/>
+                  <path class="ln" pathLength="1" style="--dur:0.7s;--del:3.577272727272727s" d="M 20.59 -90.91 C 17.96 -93.02 9.35 -100.05 4.81 -103.6 C 0.27 -107.15 -4.72 -110.76 -6.63 -112.19"/>
+                  <path class="ln" pathLength="1" style="--dur:0.7s;--del:3.709090909090909s" d="M 23.65 -113.64 C 26.35 -114.96 35.2 -119.39 39.83 -121.58 C 44.46 -123.78 49.5 -125.94 51.43 -126.81"/>
+                  <path class="ln" pathLength="1" style="--dur:0.7s;--del:3.759090909090909s" d="M 23.65 -113.64 C 21.21 -115.39 13.23 -121.23 9.03 -124.17 C 4.83 -127.11 0.22 -130.08 -1.54 -131.26"/>
+                  <path class="ln" pathLength="1" style="--dur:0.7s;--del:3.8909090909090907s" d="M 25.48 -136.36 C 27.77 -137.66 35.29 -141.98 39.23 -144.14 C 43.17 -146.29 47.47 -148.44 49.12 -149.3"/>
+                  <path class="ln" pathLength="1" style="--dur:0.7s;--del:3.9409090909090905s" d="M 25.48 -136.36 C 23.26 -137.78 15.97 -142.48 12.15 -144.84 C 8.33 -147.2 4.14 -149.56 2.54 -150.51"/>
+                  <path class="ln" pathLength="1" style="--dur:0.7s;--del:4.072727272727272s" d="M 25.99 -159.09 C 27.89 -160.32 34.12 -164.41 37.38 -166.46 C 40.65 -168.51 44.23 -170.57 45.6 -171.39"/>
+                  <path class="ln" pathLength="1" style="--dur:0.7s;--del:4.122727272727272s" d="M 25.99 -159.09 C 24.01 -160.19 17.52 -163.85 14.13 -165.68 C 10.73 -167.5 7.02 -169.32 5.6 -170.05"/>
+                  <path class="ln" pathLength="1" style="--dur:0.7s;--del:4.254545454545454s" d="M 25.15 -181.82 C 26.67 -182.93 31.67 -186.65 34.3 -188.52 C 36.93 -190.38 39.82 -192.27 40.92 -193.03"/>
+                  <path class="ln" pathLength="1" style="--dur:0.7s;--del:4.304545454545454s" d="M 25.15 -181.82 C 23.44 -182.64 17.85 -185.38 14.93 -186.75 C 12 -188.11 8.82 -189.44 7.6 -189.98"/>
+                  <path class="ln" pathLength="1" style="--dur:0.7s;--del:4.4363636363636365s" d="M 23 -204.55 C 24.17 -205.51 28.03 -208.7 30.06 -210.31 C 32.1 -211.91 34.33 -213.55 35.19 -214.2"/>
+                  <path class="ln" pathLength="1" style="--dur:0.7s;--del:4.486363636363636s" d="M 23 -204.55 C 21.59 -205.13 16.99 -207.1 14.59 -208.07 C 12.18 -209.04 9.57 -209.98 8.57 -210.36"/>
+                  <path class="ln" pathLength="1" style="--dur:0.7s;--del:4.618181818181818s" d="M 19.65 -227.27 C 20.51 -228.04 23.31 -230.57 24.79 -231.86 C 26.27 -233.14 27.91 -234.45 28.53 -234.97"/>
+                  <path class="ln" pathLength="1" style="--dur:0.7s;--del:4.668181818181818s" d="M 19.65 -227.27 C 18.57 -227.67 15.03 -229 13.18 -229.65 C 11.34 -230.31 9.33 -230.93 8.56 -231.18"/>
+                </g>
+              </g>
+            </svg>
+            <svg class="room2-bird" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+              <g class="bird" opacity="0">
+                <path d="M -20 -6 C -12 -7 -5 -4 0 0 C 6 -3 13 2 20 5"/>
+                <path d="M 0 0 C 0.6 3 1 5 1.4 7"/>
+                <path d="M 1.4 7 L -2.4 11"/>
+                <path d="M 1.4 7 L 5 10.5"/>
+              </g>
+            </svg>
+            <svg class="room2-night" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+              <defs>
+                <radialGradient id="r2eyeGlow">
+                  <stop offset="0%" stop-color="#fdfbf5" stop-opacity="0.28"/>
+                  <stop offset="100%" stop-color="#fdfbf5" stop-opacity="0"/>
+                </radialGradient>
+                <radialGradient id="r2bugGlow">
+                  <stop offset="0%" stop-color="#fdfbf5" stop-opacity="0.72"/>
+                  <stop offset="55%" stop-color="#fdfbf5" stop-opacity="0.22"/>
+                  <stop offset="100%" stop-color="#fdfbf5" stop-opacity="0"/>
+                </radialGradient>
+              </defs>
+              <g class="r2-eyes" data-zone="A" transform="translate(720,128)" opacity="0">
+                <circle cx="0" cy="0" r="24" fill="url(#r2eyeGlow)"/>
+                <ellipse class="r2-eye" cx="-10" cy="0" rx="7" ry="2.5"/>
+                <ellipse class="r2-eye" cx="10" cy="0" rx="7" ry="2.5"/>
+              </g>
+              <g class="r2-eyes" data-zone="B" transform="translate(1185,452)" opacity="0">
+                <circle cx="0" cy="0" r="24" fill="url(#r2eyeGlow)"/>
+                <ellipse class="r2-eye" cx="-10" cy="0" rx="7" ry="2.5"/>
+                <ellipse class="r2-eye" cx="10" cy="0" rx="7" ry="2.5"/>
+              </g>
+              <g class="r2-eyes" data-zone="C" transform="translate(322,832)" opacity="0">
+                <circle cx="0" cy="0" r="24" fill="url(#r2eyeGlow)"/>
+                <ellipse class="r2-eye" cx="-10" cy="0" rx="7" ry="2.5"/>
+                <ellipse class="r2-eye" cx="10" cy="0" rx="7" ry="2.5"/>
+              </g>
+              <g class="r2-bug" transform="translate(1186,206)">
+                <circle r="16" fill="url(#r2bugGlow)"/>
+                <circle r="2.2" fill="#fdfbf5"/>
+              </g>
+            </svg>
+            <h1 class="plaque-wordmark room2-wordmark" aria-label="Lucas Reed">
+              <span class="plaque-wordmark__given">Lucas</span>
+              <span class="plaque-wordmark__family">Reed</span>
+            </h1>
+          </main>
+        </section>
+
+        <section class="carousel-slide" data-screen-label="Room 3">
+          <main class="plaque room3" data-screen-label="lunar">
+            <svg class="room3-sky" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+              <circle cx="318" cy="234" r="1.05" fill="#fdfbf5" fill-opacity="0.57"/><circle cx="438" cy="369" r="1.07" fill="#fdfbf5" fill-opacity="0.54"/><circle cx="500" cy="545" r="0.92" fill="#fdfbf5" fill-opacity="0.30"/><circle cx="1013" cy="158" r="1.00" fill="#fdfbf5" fill-opacity="0.21"/><circle cx="1392" cy="126" r="1.03" fill="#fdfbf5" fill-opacity="0.34"/><circle cx="974" cy="141" r="1.18" fill="#fdfbf5" fill-opacity="0.46"/><circle cx="923" cy="402" r="1.14" fill="#fdfbf5" fill-opacity="0.42"/><circle cx="1305" cy="115" r="0.90" fill="#fdfbf5" fill-opacity="0.32"/><circle cx="510" cy="212" r="0.94" fill="#fdfbf5" fill-opacity="0.31"/><circle cx="407" cy="227" r="1.08" fill="#fdfbf5" fill-opacity="0.35"/><circle cx="751" cy="500" r="1.04" fill="#fdfbf5" fill-opacity="0.45"/><circle cx="1265" cy="372" r="1.24" fill="#fdfbf5" fill-opacity="0.30"/><circle cx="377" cy="497" r="1.08" fill="#fdfbf5" fill-opacity="0.21"/><circle cx="1377" cy="215" r="1.10" fill="#fdfbf5" fill-opacity="0.47"/><circle cx="551" cy="298" r="1.02" fill="#fdfbf5" fill-opacity="0.47"/><circle cx="870" cy="162" r="1.29" fill="#fdfbf5" fill-opacity="0.45"/><circle cx="362" cy="299" r="0.99" fill="#fdfbf5" fill-opacity="0.41"/><circle cx="630" cy="378" r="0.96" fill="#fdfbf5" fill-opacity="0.25"/><circle cx="1168" cy="354" r="1.03" fill="#fdfbf5" fill-opacity="0.49"/><circle cx="680" cy="261" r="0.96" fill="#fdfbf5" fill-opacity="0.33"/><circle cx="595" cy="448" r="1.13" fill="#fdfbf5" fill-opacity="0.25"/><circle cx="323" cy="165" r="0.89" fill="#fdfbf5" fill-opacity="0.42"/><circle cx="301" cy="425" r="0.89" fill="#fdfbf5" fill-opacity="0.24"/><circle cx="616" cy="48" r="1.05" fill="#fdfbf5" fill-opacity="0.45"/><circle cx="1027" cy="536" r="1.24" fill="#fdfbf5" fill-opacity="0.22"/><circle cx="351" cy="168" r="0.88" fill="#fdfbf5" fill-opacity="0.29"/><circle cx="740" cy="215" r="0.82" fill="#fdfbf5" fill-opacity="0.36"/><circle cx="1156" cy="288" r="1.28" fill="#fdfbf5" fill-opacity="0.35"/><circle cx="237" cy="52" r="1.23" fill="#fdfbf5" fill-opacity="0.45"/><circle cx="1036" cy="289" r="1.10" fill="#fdfbf5" fill-opacity="0.27"/><circle cx="340" cy="515" r="0.87" fill="#fdfbf5" fill-opacity="0.53"/><circle cx="974" cy="196" r="1.03" fill="#fdfbf5" fill-opacity="0.39"/><circle cx="1326" cy="155" r="0.89" fill="#fdfbf5" fill-opacity="0.56"/><circle cx="702" cy="217" r="1.20" fill="#fdfbf5" fill-opacity="0.41"/><circle cx="489" cy="295" r="0.97" fill="#fdfbf5" fill-opacity="0.51"/><circle cx="297" cy="392" r="0.87" fill="#fdfbf5" fill-opacity="0.53"/><circle cx="929" cy="208" r="1.27" fill="#fdfbf5" fill-opacity="0.32"/><circle cx="194" cy="277" r="0.85" fill="#fdfbf5" fill-opacity="0.42"/><circle cx="1241" cy="240" r="1.20" fill="#fdfbf5" fill-opacity="0.46"/><circle cx="944" cy="594" r="0.91" fill="#fdfbf5" fill-opacity="0.30"/><circle cx="585" cy="231" r="1.03" fill="#fdfbf5" fill-opacity="0.35"/><circle cx="1088" cy="129" r="1.13" fill="#fdfbf5" fill-opacity="0.21"/>
+              <circle cx="1300" cy="138" r="58" fill="none" stroke="#fdfbf5" stroke-width="1" vector-effect="non-scaling-stroke"/><path d="M 1300 80 A 58 58 0 0 0 1300 196 A 26 58 0 0 0 1300 80 Z" fill="#fdfbf5" fill-opacity="0.6"/>
+            </svg>
+            <div class="room3-surface" aria-hidden="true"></div>
+            <h1 class="plaque-wordmark room3-wordmark" aria-label="Lucas Reed">
+              <span class="r3-line"><span class="g g-L">L</span><span class="g g-u">u</span><span class="g g-c">c</span><span class="g g-a">a</span><span class="g g-s">s</span></span>
+              <span class="r3-line"><span class="g g-R">R</span><span class="g g-e1">e</span><span class="g g-e2">e</span><span class="g g-d">d</span></span>
+            </h1>
+          </main>
+        </section>
+
+        <section class="carousel-slide" data-screen-label="Room 4">
+          <main class="plaque room4" data-screen-label="microscopy">
+            <div class="room4-field" aria-hidden="true"></div>
+            <div class="room4-haze" aria-hidden="true"></div>
+            <div class="room4-lens" aria-hidden="true"></div>
+            <svg class="room4-orgs" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
+              <g class="r4-para-pos" transform="translate(602,338)">
+                <g class="r4-para-drift">
+                  <g transform="rotate(-18)">
+        <path d="M 39.6 0 C 39.6 0.48 39.54 0.97 39.42 1.45 C 39.3 1.93 39.13 2.41 38.89 2.89 C 38.65 3.36 38.36 3.84 38.01 4.3 C 37.65 4.77 37.24 5.24 36.78 5.7 C 36.31 6.15 35.78 6.61 35.21 7.05 C 34.63 7.49 33.99 7.93 33.3 8.35 C 32.62 8.78 31.88 9.19 31.08 9.6 C 30.29 10 29.45 10.39 28.56 10.77 C 27.67 11.15 26.73 11.52 25.75 11.87 C 24.77 12.22 23.74 12.55 22.67 12.87 C 21.6 13.19 20.49 13.49 19.34 13.77 C 18.19 14.05 17.01 14.32 15.79 14.56 C 14.58 14.8 13.33 15.03 12.05 15.22 C 10.78 15.42 9.47 15.6 8.15 15.76 C 6.83 15.91 5.48 16.04 4.12 16.14 C 2.76 16.25 1.38 16.33 0 16.38 C -1.38 16.43 -2.78 16.46 -4.17 16.46 C -5.56 16.46 -6.97 16.43 -8.36 16.38 C -9.74 16.32 -11.14 16.24 -12.51 16.12 C -13.88 16.01 -15.24 15.87 -16.58 15.71 C -17.92 15.54 -19.25 15.34 -20.54 15.12 C -21.83 14.9 -23.1 14.64 -24.33 14.37 C -25.56 14.09 -26.77 13.79 -27.92 13.46 C -29.08 13.13 -30.2 12.77 -31.26 12.39 C -32.33 12.01 -33.35 11.61 -34.31 11.19 C -35.27 10.76 -36.19 10.31 -37.04 9.85 C -37.89 9.38 -38.68 8.9 -39.4 8.39 C -40.12 7.89 -40.79 7.37 -41.37 6.83 C -41.95 6.3 -42.47 5.75 -42.88 5.18 C -43.29 4.62 -43.64 4.04 -43.85 3.46 C -44.05 2.88 -44.17 2.28 -44.11 1.7 C -44.05 1.12 -43.86 0.53 -43.5 0 C -43.15 -0.53 -42.59 -1.05 -41.98 -1.49 C -41.36 -1.93 -40.54 -2.31 -39.81 -2.65 C -39.07 -3 -38.24 -3.26 -37.58 -3.58 C -36.92 -3.89 -36.33 -4.16 -35.85 -4.55 C -35.38 -4.94 -35.08 -5.38 -34.74 -5.9 C -34.4 -6.43 -34.2 -7.07 -33.82 -7.7 C -33.45 -8.33 -33.07 -9.06 -32.5 -9.7 C -31.93 -10.34 -31.24 -11 -30.43 -11.56 C -29.61 -12.12 -28.64 -12.63 -27.61 -13.08 C -26.58 -13.52 -25.42 -13.89 -24.24 -14.23 C -23.06 -14.56 -21.79 -14.83 -20.52 -15.08 C -19.24 -15.32 -17.91 -15.52 -16.58 -15.7 C -15.24 -15.87 -13.88 -16.01 -12.51 -16.12 C -11.14 -16.24 -9.74 -16.32 -8.36 -16.37 C -6.97 -16.43 -5.56 -16.46 -4.17 -16.46 C -2.78 -16.46 -1.38 -16.43 0 -16.38 C 1.38 -16.33 2.76 -16.25 4.12 -16.14 C 5.48 -16.04 6.83 -15.91 8.15 -15.76 C 9.47 -15.6 10.78 -15.42 12.05 -15.22 C 13.33 -15.03 14.58 -14.8 15.79 -14.56 C 17.01 -14.32 18.19 -14.05 19.34 -13.77 C 20.49 -13.49 21.6 -13.19 22.67 -12.87 C 23.74 -12.55 24.77 -12.22 25.75 -11.87 C 26.73 -11.52 27.67 -11.15 28.56 -10.77 C 29.45 -10.39 30.29 -10 31.08 -9.6 C 31.88 -9.19 32.62 -8.78 33.3 -8.35 C 33.99 -7.93 34.63 -7.49 35.21 -7.05 C 35.78 -6.61 36.31 -6.15 36.78 -5.7 C 37.24 -5.24 37.65 -4.77 38.01 -4.3 C 38.36 -3.84 38.65 -3.36 38.89 -2.89 C 39.13 -2.41 39.3 -1.93 39.42 -1.45 C 39.54 -0.97 39.6 -0.48 39.6 0 Z" fill="none" stroke="#1a1612" stroke-width="1.2"/>
+        <line x1="39.6" y1="0" x2="45.1" y2="0" stroke="#1a1612" stroke-width="0.8"/><line x1="39.15" y1="2.31" x2="44.64" y2="2.64" stroke="#1a1612" stroke-width="0.8"/><line x1="37.79" y1="4.59" x2="43.25" y2="5.25" stroke="#1a1612" stroke-width="0.8"/><line x1="35.55" y1="6.78" x2="40.95" y2="7.81" stroke="#1a1612" stroke-width="0.8"/><line x1="32.45" y1="8.86" x2="37.76" y2="10.31" stroke="#1a1612" stroke-width="0.8"/><line x1="28.56" y1="10.77" x2="33.71" y2="12.71" stroke="#1a1612" stroke-width="0.8"/><line x1="23.93" y1="12.48" x2="28.81" y2="15.02" stroke="#1a1612" stroke-width="0.8"/><line x1="18.65" y1="13.94" x2="23.05" y2="17.23" stroke="#1a1612" stroke-width="0.8"/><line x1="12.81" y1="15.1" x2="16.37" y2="19.3" stroke="#1a1612" stroke-width="0.8"/><line x1="6.55" y1="15.93" x2="8.64" y2="21.01" stroke="#1a1612" stroke-width="0.8"/><line x1="0" y1="16.38" x2="0" y2="21.88" stroke="#1a1612" stroke-width="0.8"/><line x1="-6.68" y1="16.43" x2="-8.76" y2="21.52" stroke="#1a1612" stroke-width="0.8"/><line x1="-13.33" y1="16.05" x2="-16.84" y2="20.29" stroke="#1a1612" stroke-width="0.8"/><line x1="-19.76" y1="15.25" x2="-24.11" y2="18.61" stroke="#1a1612" stroke-width="0.8"/><line x1="-25.8" y1="14.02" x2="-30.63" y2="16.65" stroke="#1a1612" stroke-width="0.8"/><line x1="-31.26" y1="12.39" x2="-36.37" y2="14.42" stroke="#1a1612" stroke-width="0.8"/><line x1="-35.99" y1="10.4" x2="-41.27" y2="11.92" stroke="#1a1612" stroke-width="0.8"/><line x1="-39.83" y1="8.09" x2="-45.22" y2="9.19" stroke="#1a1612" stroke-width="0.8"/><line x1="-42.67" y1="5.54" x2="-48.13" y2="6.25" stroke="#1a1612" stroke-width="0.8"/><line x1="-44.41" y1="2.81" x2="-49.9" y2="3.16" stroke="#1a1612" stroke-width="0.8"/><line x1="-45" y1="0" x2="-50.5" y2="0" stroke="#1a1612" stroke-width="0.8"/><line x1="-44.41" y1="-2.81" x2="-49.9" y2="-3.16" stroke="#1a1612" stroke-width="0.8"/><line x1="-42.67" y1="-5.54" x2="-48.13" y2="-6.25" stroke="#1a1612" stroke-width="0.8"/><line x1="-39.83" y1="-8.09" x2="-45.22" y2="-9.19" stroke="#1a1612" stroke-width="0.8"/><line x1="-35.99" y1="-10.4" x2="-41.27" y2="-11.92" stroke="#1a1612" stroke-width="0.8"/><line x1="-31.26" y1="-12.39" x2="-36.37" y2="-14.42" stroke="#1a1612" stroke-width="0.8"/><line x1="-25.8" y1="-14.02" x2="-30.63" y2="-16.65" stroke="#1a1612" stroke-width="0.8"/><line x1="-19.76" y1="-15.25" x2="-24.11" y2="-18.61" stroke="#1a1612" stroke-width="0.8"/><line x1="-13.33" y1="-16.05" x2="-16.84" y2="-20.29" stroke="#1a1612" stroke-width="0.8"/><line x1="-6.68" y1="-16.43" x2="-8.76" y2="-21.52" stroke="#1a1612" stroke-width="0.8"/><line x1="0" y1="-16.38" x2="0" y2="-21.88" stroke="#1a1612" stroke-width="0.8"/><line x1="6.55" y1="-15.93" x2="8.64" y2="-21.01" stroke="#1a1612" stroke-width="0.8"/><line x1="12.81" y1="-15.1" x2="16.37" y2="-19.3" stroke="#1a1612" stroke-width="0.8"/><line x1="18.65" y1="-13.94" x2="23.05" y2="-17.23" stroke="#1a1612" stroke-width="0.8"/><line x1="23.93" y1="-12.48" x2="28.81" y2="-15.02" stroke="#1a1612" stroke-width="0.8"/><line x1="28.56" y1="-10.77" x2="33.71" y2="-12.71" stroke="#1a1612" stroke-width="0.8"/><line x1="32.45" y1="-8.86" x2="37.76" y2="-10.31" stroke="#1a1612" stroke-width="0.8"/><line x1="35.55" y1="-6.78" x2="40.95" y2="-7.81" stroke="#1a1612" stroke-width="0.8"/><line x1="37.79" y1="-4.59" x2="43.25" y2="-5.25" stroke="#1a1612" stroke-width="0.8"/><line x1="39.15" y1="-2.31" x2="44.64" y2="-2.64" stroke="#1a1612" stroke-width="0.8"/>
+        <circle cx="6" cy="-2" r="4.2" fill="none" stroke="#1a1612" stroke-width="1"/>
+        <ellipse cx="-10" cy="3" rx="6" ry="3.4" fill="none" stroke="#1a1612" stroke-width="0.8"/>
+        <path d="M -34 6 C -26 10 -18 10 -12 6" fill="none" stroke="#1a1612" stroke-width="0.9"/>
+                  </g>
+                </g>
+              </g>
+              <g transform="translate(852,346)">
+                <g class="r4-diatom-spin">
+        <circle cx="0" cy="0" r="35" fill="none" stroke="#1a1612" stroke-width="1.2"/>
+        <circle cx="0" cy="0" r="31" fill="none" stroke="#1a1612" stroke-width="0.7"/>
+        <path d="M 0 -31 Z" fill="none" />
+        <path d="M 0 -31 L 26.85 -15.5 L 26.85 15.5 L 0 31 L -26.85 15.5 L -26.85 -15.5 Z" fill="none" stroke="#1a1612" stroke-width="0.8"/>
+        <path d="M 0 -15.5 L 13.42 -7.75 L 13.42 7.75 L 0 15.5 L -13.42 7.75 L -13.42 -7.75 Z" fill="none" stroke="#1a1612" stroke-width="0.7"/>
+        <line x1="0" y1="0" x2="0" y2="-35" stroke="#1a1612" stroke-width="0.6"/><line x1="0" y1="0" x2="30.31" y2="-17.5" stroke="#1a1612" stroke-width="0.6"/><line x1="0" y1="0" x2="30.31" y2="17.5" stroke="#1a1612" stroke-width="0.6"/><line x1="0" y1="0" x2="0" y2="35" stroke="#1a1612" stroke-width="0.6"/><line x1="0" y1="0" x2="-30.31" y2="17.5" stroke="#1a1612" stroke-width="0.6"/><line x1="0" y1="0" x2="-30.31" y2="-17.5" stroke="#1a1612" stroke-width="0.6"/>
+        <circle cx="14" cy="0" r="1.1" fill="#1a1612"/><circle cx="7" cy="12.12" r="1.1" fill="#1a1612"/><circle cx="-7" cy="12.12" r="1.1" fill="#1a1612"/><circle cx="-14" cy="0" r="1.1" fill="#1a1612"/><circle cx="-7" cy="-12.12" r="1.1" fill="#1a1612"/><circle cx="7" cy="-12.12" r="1.1" fill="#1a1612"/><circle cx="23.18" cy="6.21" r="1.1" fill="#1a1612"/><circle cx="16.97" cy="16.97" r="1.1" fill="#1a1612"/><circle cx="6.21" cy="23.18" r="1.1" fill="#1a1612"/><circle cx="-6.21" cy="23.18" r="1.1" fill="#1a1612"/><circle cx="-16.97" cy="16.97" r="1.1" fill="#1a1612"/><circle cx="-23.18" cy="6.21" r="1.1" fill="#1a1612"/><circle cx="-23.18" cy="-6.21" r="1.1" fill="#1a1612"/><circle cx="-16.97" cy="-16.97" r="1.1" fill="#1a1612"/><circle cx="-6.21" cy="-23.18" r="1.1" fill="#1a1612"/><circle cx="6.21" cy="-23.18" r="1.1" fill="#1a1612"/><circle cx="16.97" cy="-16.97" r="1.1" fill="#1a1612"/><circle cx="23.18" cy="-6.21" r="1.1" fill="#1a1612"/><circle cx="31" cy="0" r="1.1" fill="#1a1612"/><circle cx="29.13" cy="10.6" r="1.1" fill="#1a1612"/><circle cx="23.75" cy="19.93" r="1.1" fill="#1a1612"/><circle cx="15.5" cy="26.85" r="1.1" fill="#1a1612"/><circle cx="5.38" cy="30.53" r="1.1" fill="#1a1612"/><circle cx="-5.38" cy="30.53" r="1.1" fill="#1a1612"/><circle cx="-15.5" cy="26.85" r="1.1" fill="#1a1612"/><circle cx="-23.75" cy="19.93" r="1.1" fill="#1a1612"/><circle cx="-29.13" cy="10.6" r="1.1" fill="#1a1612"/><circle cx="-31" cy="0" r="1.1" fill="#1a1612"/><circle cx="-29.13" cy="-10.6" r="1.1" fill="#1a1612"/><circle cx="-23.75" cy="-19.93" r="1.1" fill="#1a1612"/><circle cx="-15.5" cy="-26.85" r="1.1" fill="#1a1612"/><circle cx="-5.38" cy="-30.53" r="1.1" fill="#1a1612"/><circle cx="5.38" cy="-30.53" r="1.1" fill="#1a1612"/><circle cx="15.5" cy="-26.85" r="1.1" fill="#1a1612"/><circle cx="23.75" cy="-19.93" r="1.1" fill="#1a1612"/><circle cx="29.13" cy="-10.6" r="1.1" fill="#1a1612"/>
+        <circle cx="0" cy="0" r="2.2" fill="none" stroke="#1a1612" stroke-width="0.9"/>
+                </g>
+              </g>
+              <g class="r4-tardi-cross">
+                <g transform="translate(0,578)">
+                  <g transform="scale(0.96)">
+        <path d="M 49.92 -4 C 49.92 -3.31 49.78 -2.62 49.5 -1.93 C 49.22 -1.24 48.8 -0.55 48.25 0.14 C 47.7 0.82 47.01 1.5 46.19 2.18 C 45.38 2.86 44.42 3.53 43.35 4.19 C 42.28 4.86 41.08 5.51 39.77 6.16 C 38.47 6.8 37.04 7.43 35.51 8.05 C 33.99 8.66 32.35 9.26 30.64 9.83 C 28.92 10.41 27.1 10.96 25.22 11.48 C 23.34 12.01 21.37 12.51 19.35 12.96 C 17.33 13.42 15.24 13.84 13.12 14.22 C 11 14.6 8.82 14.94 6.63 15.22 C 4.45 15.5 2.22 15.74 0 15.92 C -2.22 16.1 -4.46 16.22 -6.67 16.28 C -8.88 16.33 -11.09 16.33 -13.26 16.26 C -15.42 16.19 -17.57 16.05 -19.65 15.85 C -21.73 15.64 -23.78 15.36 -25.74 15.02 C -27.7 14.67 -29.61 14.26 -31.41 13.77 C -33.21 13.29 -34.94 12.74 -36.55 12.13 C -38.17 11.51 -39.69 10.83 -41.08 10.1 C -42.48 9.36 -43.77 8.57 -44.91 7.73 C -46.06 6.89 -47.09 5.99 -47.97 5.07 C -48.85 4.14 -49.6 3.17 -50.19 2.18 C -50.79 1.19 -51.25 0.16 -51.55 -0.87 C -51.85 -1.9 -52 -2.96 -52 -4 C -52 -5.04 -51.85 -6.1 -51.55 -7.13 C -51.25 -8.16 -50.79 -9.19 -50.19 -10.18 C -49.6 -11.17 -48.85 -12.14 -47.97 -13.07 C -47.09 -13.99 -46.06 -14.89 -44.91 -15.73 C -43.77 -16.57 -42.48 -17.36 -41.08 -18.1 C -39.69 -18.83 -38.17 -19.51 -36.55 -20.13 C -34.94 -20.74 -33.21 -21.29 -31.41 -21.77 C -29.61 -22.26 -27.7 -22.67 -25.74 -23.02 C -23.78 -23.36 -21.73 -23.64 -19.65 -23.85 C -17.57 -24.05 -15.42 -24.19 -13.26 -24.26 C -11.09 -24.33 -8.88 -24.33 -6.67 -24.28 C -4.46 -24.22 -2.22 -24.1 0 -23.92 C 2.22 -23.74 4.45 -23.5 6.63 -23.22 C 8.82 -22.94 11 -22.6 13.12 -22.22 C 15.24 -21.84 17.33 -21.42 19.35 -20.96 C 21.37 -20.51 23.34 -20.01 25.22 -19.48 C 27.1 -18.96 28.92 -18.41 30.64 -17.83 C 32.35 -17.26 33.99 -16.66 35.51 -16.05 C 37.04 -15.43 38.47 -14.8 39.77 -14.16 C 41.08 -13.51 42.28 -12.86 43.35 -12.19 C 44.42 -11.53 45.38 -10.86 46.19 -10.18 C 47.01 -9.5 47.7 -8.82 48.25 -8.14 C 48.8 -7.45 49.22 -6.76 49.5 -6.07 C 49.78 -5.38 49.92 -4.69 49.92 -4 Z" fill="none" stroke="#1a1612" stroke-width="1.3"/>
+        <path d="M -26 -26 C -29 -10 -29 6 -26 18" fill="none" stroke="#1a1612" stroke-width="0.7"/><path d="M -8 -26 C -11 -10 -11 6 -8 18" fill="none" stroke="#1a1612" stroke-width="0.7"/><path d="M 10 -26 C 7 -10 7 6 10 18" fill="none" stroke="#1a1612" stroke-width="0.7"/><path d="M 28 -26 C 25 -10 25 6 28 18" fill="none" stroke="#1a1612" stroke-width="0.7"/>
+        <circle cx="48" cy="-6" r="4" fill="none" stroke="#1a1612" stroke-width="1"/>
+        <circle cx="40" cy="-12" r="1.4" fill="#1a1612"/><circle cx="40" cy="0" r="1.4" fill="#1a1612"/>
+        <g class="r4-leg r4-leg-0" style="transform-box:fill-box;transform-origin:-38px 0px"><line x1="-38" y1="14" x2="-38" y2="20" stroke="#1a1612" stroke-width="1.4"/><g transform="translate(-38,0)"><line x1="0" y1="20" x2="-2.5" y2="25" stroke="#1a1612" stroke-width="0.8"/><line x1="0" y1="20" x2="2.5" y2="25" stroke="#1a1612" stroke-width="0.8"/></g></g>
+        <g class="r4-leg r4-leg-1" style="transform-box:fill-box;transform-origin:-16px 0px"><line x1="-16" y1="14" x2="-16" y2="20" stroke="#1a1612" stroke-width="1.4"/><g transform="translate(-16,0)"><line x1="0" y1="20" x2="-2.5" y2="25" stroke="#1a1612" stroke-width="0.8"/><line x1="0" y1="20" x2="2.5" y2="25" stroke="#1a1612" stroke-width="0.8"/></g></g>
+        <g class="r4-leg r4-leg-0" style="transform-box:fill-box;transform-origin:8px 0px"><line x1="8" y1="14" x2="8" y2="20" stroke="#1a1612" stroke-width="1.4"/><g transform="translate(8,0)"><line x1="0" y1="20" x2="-2.5" y2="25" stroke="#1a1612" stroke-width="0.8"/><line x1="0" y1="20" x2="2.5" y2="25" stroke="#1a1612" stroke-width="0.8"/></g></g>
+        <g class="r4-leg r4-leg-1" style="transform-box:fill-box;transform-origin:30px 0px"><line x1="30" y1="14" x2="30" y2="20" stroke="#1a1612" stroke-width="1.4"/><g transform="translate(30,0)"><line x1="0" y1="20" x2="-2.5" y2="25" stroke="#1a1612" stroke-width="0.8"/><line x1="0" y1="20" x2="2.5" y2="25" stroke="#1a1612" stroke-width="0.8"/></g></g>
+                  </g>
+                </g>
+              </g>
+            </svg>
+            <h1 class="plaque-wordmark room4-wordmark" aria-label="Lucas Reed">
+              <span class="plaque-wordmark__given">Lucas</span>
+              <span class="plaque-wordmark__family">Reed</span>
+            </h1>
+          </main>
+        </section>
+
+      </div>
+
+      <div class="carousel-dots" id="dots" role="tablist" aria-label="Rooms">
+        <button class="carousel-dot" type="button" data-index="0" aria-current="true" aria-label="Room 1"></button>
+        <button class="carousel-dot" type="button" data-index="1" aria-current="false" aria-label="Room 2"></button>
+        <button class="carousel-dot" type="button" data-index="2" aria-current="false" aria-label="Room 3"></button>
+        <button class="carousel-dot" type="button" data-index="3" aria-current="false" aria-label="Room 4"></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  // ---- scale the fixed frame to fit the viewport (letterboxed) ----
+  var frame = document.getElementById("frame");
+  function fit() {
+    var w = window.innerWidth, h = window.innerHeight;
+    if (!w || !h) { requestAnimationFrame(fit); return; }
+    var s = Math.min(w / 1440, h / 900);
+    frame.style.transform = "translate(-50%, -50%) scale(" + s + ")";
+  }
+  fit();
+  window.addEventListener("resize", fit);
+  window.addEventListener("load", fit);
+
+  // ---- signature interaction 1: section-hover thinning + meta fade ----
+  var plaque = document.getElementById("plaque");
+  var meta = document.getElementById("meta");
+  var sections = document.getElementById("sections").querySelectorAll(".plaque-section");
+  function activate(el) {
+    plaque.setAttribute("data-active", "true");
+    meta.textContent = el.getAttribute("data-meta");
+    meta.setAttribute("data-visible", "true");
+  }
+  function deactivate() {
+    plaque.removeAttribute("data-active");
+    meta.removeAttribute("data-visible");
+  }
+  sections.forEach(function (el) {
+    el.addEventListener("click", function (e) { e.preventDefault(); });
+    el.addEventListener("mouseenter", function () { activate(el); });
+    el.addEventListener("mouseleave", deactivate);
+    el.addEventListener("focus", function () { activate(el); });
+    el.addEventListener("blur", deactivate);
+  });
+
+  // ---- signature interaction 2: wordmark tap-pulse ----
+  var wordmark = document.getElementById("wordmark");
+  var pulseTimer = null;
+  wordmark.addEventListener("click", function () {
+    if (pulseTimer) clearTimeout(pulseTimer);
+    plaque.removeAttribute("data-pulsing");
+    // force reflow so the animation restarts on rapid taps
+    void plaque.offsetWidth;
+    plaque.setAttribute("data-pulsing", "true");
+    pulseTimer = setTimeout(function () { plaque.removeAttribute("data-pulsing"); }, 720);
+  });
+
+  // ---- theme toggle ----
+  document.getElementById("toggle").addEventListener("click", function () {
+    var root = document.documentElement;
+    root.setAttribute("data-theme", root.getAttribute("data-theme") === "dark" ? "light" : "dark");
+  });
+
+  // ---- carousel: arrow keys, horizontal scroll, swipe, dots ----
+  var track = document.getElementById("track");
+  var dots = Array.prototype.slice.call(document.querySelectorAll(".carousel-dot"));
+  var COUNT = 4, index = 0;
+  function goTo(i) {
+    index = Math.max(0, Math.min(COUNT - 1, i));
+    track.style.transform = "translateX(" + (-index * 100) + "%)";
+    dots.forEach(function (d, n) { d.setAttribute("aria-current", n === index ? "true" : "false"); });
+    if (index === 1) {
+      var r2 = document.querySelectorAll(".carousel-slide")[1];
+      if (r2) r2.classList.add("r2-grow");
+    }
+    document.getElementById("dots").classList.toggle("dots-on-night", index === 2 || index === 3);
+  }
+  var _params = new URLSearchParams(location.search);
+  var _sc = _params.get("showcase");
+  if (_params.get("theme")) document.documentElement.setAttribute("data-theme", _params.get("theme"));
+  var _initRoom = 3;
+  if (_sc === "day" || _sc === "night") {
+    _initRoom = 1;
+    document.documentElement.setAttribute("data-theme", _sc === "night" ? "dark" : "light");
+  } else if (_params.get("room")) {
+    _initRoom = Math.max(0, Math.min(COUNT - 1, (parseInt(_params.get("room"), 10) || 1) - 1));
+  }
+  goTo(_initRoom); // initial slide (URL-overridable); Room 1 is the canonical front door
+
+  dots.forEach(function (d) {
+    d.addEventListener("click", function () { goTo(parseInt(d.getAttribute("data-index"), 10)); });
+  });
+
+  window.addEventListener("keydown", function (e) {
+    if (e.key === "ArrowRight") { goTo(index + 1); }
+    else if (e.key === "ArrowLeft") { goTo(index - 1); }
+  });
+
+  // horizontal wheel / trackpad scroll
+  var wheelLock = false;
+  document.getElementById("carousel").addEventListener("wheel", function (e) {
+    if (Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+    e.preventDefault();
+    if (wheelLock) return;
+    if (e.deltaX > 12) { goTo(index + 1); wheelLock = true; }
+    else if (e.deltaX < -12) { goTo(index - 1); wheelLock = true; }
+    if (wheelLock) setTimeout(function () { wheelLock = false; }, 600);
+  }, { passive: false });
+
+  // touch swipe
+  var touchX = null;
+  var carousel = document.getElementById("carousel");
+  carousel.addEventListener("touchstart", function (e) { touchX = e.touches[0].clientX; }, { passive: true });
+  carousel.addEventListener("touchend", function (e) {
+    if (touchX === null) return;
+    var dx = e.changedTouches[0].clientX - touchX;
+    if (dx < -48) { goTo(index + 1); }
+    else if (dx > 48) { goTo(index - 1); }
+    touchX = null;
+  }, { passive: true });
+})();
+</script>
+<script>
+(function () {
+  var params = new URLSearchParams(location.search);
+  var showcase = params.get("showcase");
+  var room2 = document.querySelector(".room2");
+  var birdG = document.querySelector(".room2-bird .bird");
+  var nightSvg = document.querySelector(".room2-night");
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var frame = document.getElementById("frame");
+  function theme() { return document.documentElement.getAttribute("data-theme"); }
+
+  // ----- bird (day): a glimpse, ~30-60s apart, 6s gentle-arc crossing -----
+  function flyBird() {
+    if (!birdG) return;
+    var dir = Math.random() < 0.5 ? 1 : -1;
+    var band = 110 + Math.random() * 320;
+    var drop = (Math.random() - 0.5) * 130;
+    var x0 = dir > 0 ? -60 : 1500, x1 = dir > 0 ? 1500 : -60;
+    var dur = 6000, t0 = performance.now();
+    birdG.setAttribute("opacity", "1");
+    (function step(t) {
+      var p = (t - t0) / dur;
+      if (p >= 1) { birdG.setAttribute("opacity", "0"); scheduleBird(); return; }
+      var x = x0 + (x1 - x0) * p;
+      var y = band + drop * Math.sin(Math.PI * p);
+      var ang = (dir > 0 ? 6 : -6) + (drop > 0 ? 6 : -6) * Math.cos(Math.PI * p);
+      birdG.setAttribute("transform", "translate(" + x.toFixed(1) + "," + y.toFixed(1) + ") rotate(" + ang.toFixed(1) + ") scale(" + dir + ",1)");
+      requestAnimationFrame(step);
+    })(t0);
+  }
+  function scheduleBird() {
+    if (reduce) return;
+    setTimeout(function () { theme() === "dark" ? scheduleBird() : flyBird(); }, 30000 + Math.random() * 30000);
+  }
+
+  // ----- eyes (night): one pair, rotating zones, blink, hunt-cooldown -----
+  var zones = { A: [720, 128], B: [1185, 452], C: [322, 832] };
+  var eyeEls = nightSvg ? [].slice.call(nightSvg.querySelectorAll(".r2-eyes")) : [];
+  var cooldownUntil = 0, zi = 0, activeEye = null, eyeState = "idle", eyesTimer = null;
+  function byZone(z) { for (var i = 0; i < eyeEls.length; i++) if (eyeEls[i].getAttribute("data-zone") === z) return eyeEls[i]; return null; }
+  function setLids(el, sy) { el.querySelectorAll(".r2-eye").forEach(function (s) { s.style.transform = "scaleY(" + sy + ")"; }); }
+  function showEyes() {
+    if (reduce) return;
+    if (performance.now() < cooldownUntil) { scheduleEyes(6000); return; }
+    var z = ["A", "B", "C"][zi++ % 3], el = byZone(z);
+    if (!el) { scheduleEyes(5000); return; }
+    activeEye = el; eyeState = "open";
+    el.style.transition = "opacity .5s ease";
+    el.querySelectorAll(".r2-eye").forEach(function (s) { s.style.transition = "transform .12s ease"; });
+    setLids(el, 1); el.setAttribute("opacity", "1");
+    var hold = 2000 + Math.random() * 2000;
+    setTimeout(function () { if (eyeState === "open") { setLids(el, 0.04); setTimeout(function () { if (eyeState === "open") setLids(el, 1); }, 150); } }, hold * 0.5);
+    setTimeout(function () { if (eyeState === "open") { eyeState = "idle"; el.setAttribute("opacity", "0"); activeEye = null; scheduleEyes(); } }, hold);
+  }
+  function scheduleEyes(delay) {
+    if (reduce) return;
+    clearTimeout(eyesTimer);
+    eyesTimer = setTimeout(function () { theme() === "dark" ? showEyes() : scheduleEyes(8000); }, delay != null ? delay : 15000 + Math.random() * 15000);
+  }
+  // hunted: cursor within ~100px snaps them shut + long cooldown
+  if (nightSvg) {
+    document.getElementById("carousel").addEventListener("pointermove", function (e) {
+      if (eyeState !== "open" || !activeEye || theme() !== "dark") return;
+      var fr = frame.getBoundingClientRect(), s = fr.width / 1440 || 1;
+      var zc = zones[activeEye.getAttribute("data-zone")];
+      var d = Math.hypot(e.clientX - (fr.left + zc[0] * s), e.clientY - (fr.top + zc[1] * s));
+      if (d < 100 * s) {
+        activeEye.style.transition = "none"; activeEye.setAttribute("opacity", "0");
+        eyeState = "idle"; activeEye = null;
+        cooldownUntil = performance.now() + (45000 + Math.random() * 45000);
+        scheduleEyes(cooldownUntil - performance.now() + 500);
+      }
+    });
+  }
+
+  // ----- init -----
+  if (showcase === "day") {
+    if (room2) room2.classList.add("showcase-day");
+    if (birdG) { birdG.setAttribute("transform", "translate(432,225) rotate(8)"); birdG.setAttribute("opacity", "1"); }
+  } else if (showcase === "night") {
+    if (room2) room2.classList.add("showcase-night");
+    var ea = byZone("A"); if (ea) ea.setAttribute("opacity", "1");
+  } else {
+    scheduleBird();
+    scheduleEyes();
+  }
+})();
+</script>
+</body>
+</html>
