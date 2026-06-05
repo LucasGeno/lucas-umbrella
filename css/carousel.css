@@ -57,8 +57,10 @@
   position: relative;
   transition: opacity var(--plaque-t-fast);
 }
-/* 44×44 transparent hit area centered on the visible 6×6 dot (WCAG/Apple HIG min). */
-.carousel-dot::before { content: ""; position: absolute; inset: -19px; }
+/* 44px-tall transparent hit area centered on the visible 6×6 dot (WCAG/Apple HIG min).
+   Horizontal inset is clamped to half the 12px gap so adjacent dot hit zones
+   don't overlap — vertical reach stays at 44px, exclusive horizontal reach is 18px. */
+.carousel-dot::before { content: ""; position: absolute; inset: -19px -6px; }
 .carousel-dot[aria-selected="true"] { opacity: 1; }
 .carousel-dot:focus-visible { outline: 1px solid currentColor; outline-offset: 4px; }
 

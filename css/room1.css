@@ -54,7 +54,11 @@
   font-weight: 500;
   letter-spacing: 0.16em; text-transform: uppercase; color: var(--plaque-ink);
   text-decoration: none; transition: opacity var(--plaque-t-fast);
+  position: relative;
 }
+/* 44px-tall transparent hit area centered on the text (WCAG/Apple HIG min).
+   Horizontal inset is small so adjacent sections separated by · don't overlap. */
+.plaque-section::before { content: ""; position: absolute; inset: -14px -4px; }
 .plaque-section:hover, .plaque-section:focus-visible { opacity: 0.6; }
 .plaque-section:focus-visible { outline: 1px solid var(--plaque-ink); outline-offset: 4px; }
 .plaque-section-sep { color: var(--plaque-ink-3); font-size: var(--plaque-size-section); }
