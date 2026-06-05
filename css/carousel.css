@@ -59,7 +59,7 @@
 }
 /* 44×44 transparent hit area centered on the visible 6×6 dot (WCAG/Apple HIG min). */
 .carousel-dot::before { content: ""; position: absolute; inset: -19px; }
-.carousel-dot[aria-current="true"] { opacity: 1; }
+.carousel-dot[aria-selected="true"] { opacity: 1; }
 .carousel-dot:focus-visible { outline: 1px solid currentColor; outline-offset: 4px; }
 
 /* Moved from the Room 3 banner: JS adds .dots-on-night for rooms 3 AND 4, so this is carousel chrome, not room-3-specific. */

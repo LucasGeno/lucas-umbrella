@@ -14,12 +14,13 @@
 </head>
 <body>
 <div class="stage">
-  <div class="frame" id="frame">
+  <main class="frame" id="frame">
+    <h1 class="sr-only">Lucas Reed</h1>
     <div class="carousel" id="carousel">
       <div class="carousel-track" id="track">
 
-        <section class="carousel-slide" data-screen-label="Room 1">
-    <main class="plaque" id="plaque" data-screen-label="umbrella">
+        <section class="carousel-slide" role="tabpanel" id="room-1" aria-labelledby="wordmark" tabindex="0" data-screen-label="Room 1">
+    <div class="plaque" id="plaque" data-screen-label="umbrella">
       <div class="plaque-chrome">
         <button class="theme-toggle" id="toggle" type="button" aria-label="Toggle theme">
           <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -32,10 +33,10 @@
         </button>
       </div>
 
-      <h1 class="plaque-wordmark" id="wordmark">
+      <h2 class="plaque-wordmark" id="wordmark">
         <span class="plaque-wordmark__given">Lucas</span>
         <span class="plaque-wordmark__family">Reed</span>
-      </h1>
+      </h2>
 
       <nav class="plaque-section-line" aria-label="Sections" id="sections">
         <a class="plaque-section" href="/tech" data-meta="/tech · engineering, infrastructure, writing.">/tech</a>
@@ -58,11 +59,11 @@
         <span class="plaque-colophon__sep" aria-hidden="true">·</span>
         <a href="#">RSS</a>
       </footer>
-    </main>
+    </div>
         </section>
 
-        <section class="carousel-slide" data-screen-label="Room 2">
-          <main class="plaque room2" data-screen-label="botanical">
+        <section class="carousel-slide" role="tabpanel" id="room-2" aria-labelledby="room-2-title" tabindex="0" data-screen-label="Room 2">
+          <div class="plaque room2" data-screen-label="botanical">
             <svg class="room2-flora" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
               <g class="sway sway-monstera">
                 <path class="ln" pathLength="1" style="--dur:1.6s;--del:0s" d="M 12 904 C 70 898 116 892 150 884"/>
@@ -171,29 +172,29 @@
                 <circle r="2.2" fill="#fdfbf5"/>
               </g>
             </svg>
-            <h1 class="plaque-wordmark room2-wordmark" aria-label="Lucas Reed">
+            <h2 class="plaque-wordmark room2-wordmark" id="room-2-title" aria-label="Lucas Reed">
               <span class="plaque-wordmark__given">Lucas</span>
               <span class="plaque-wordmark__family">Reed</span>
-            </h1>
-          </main>
+            </h2>
+          </div>
         </section>
 
-        <section class="carousel-slide" data-screen-label="Room 3">
-          <main class="plaque room3" data-screen-label="lunar">
+        <section class="carousel-slide" role="tabpanel" id="room-3" aria-labelledby="room-3-title" tabindex="0" data-screen-label="Room 3">
+          <div class="plaque room3" data-screen-label="lunar">
             <svg class="room3-sky" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true" focusable="false">
               <circle cx="318" cy="234" r="1.05" fill="#fdfbf5" fill-opacity="0.57"/><circle cx="438" cy="369" r="1.07" fill="#fdfbf5" fill-opacity="0.54"/><circle cx="500" cy="545" r="0.92" fill="#fdfbf5" fill-opacity="0.30"/><circle cx="1013" cy="158" r="1.00" fill="#fdfbf5" fill-opacity="0.21"/><circle cx="1392" cy="126" r="1.03" fill="#fdfbf5" fill-opacity="0.34"/><circle cx="974" cy="141" r="1.18" fill="#fdfbf5" fill-opacity="0.46"/><circle cx="923" cy="402" r="1.14" fill="#fdfbf5" fill-opacity="0.42"/><circle cx="1305" cy="115" r="0.90" fill="#fdfbf5" fill-opacity="0.32"/><circle cx="510" cy="212" r="0.94" fill="#fdfbf5" fill-opacity="0.31"/><circle cx="407" cy="227" r="1.08" fill="#fdfbf5" fill-opacity="0.35"/><circle cx="751" cy="500" r="1.04" fill="#fdfbf5" fill-opacity="0.45"/><circle cx="1265" cy="372" r="1.24" fill="#fdfbf5" fill-opacity="0.30"/><circle cx="377" cy="497" r="1.08" fill="#fdfbf5" fill-opacity="0.21"/><circle cx="1377" cy="215" r="1.10" fill="#fdfbf5" fill-opacity="0.47"/><circle cx="551" cy="298" r="1.02" fill="#fdfbf5" fill-opacity="0.47"/><circle cx="870" cy="162" r="1.29" fill="#fdfbf5" fill-opacity="0.45"/><circle cx="362" cy="299" r="0.99" fill="#fdfbf5" fill-opacity="0.41"/><circle cx="630" cy="378" r="0.96" fill="#fdfbf5" fill-opacity="0.25"/><circle cx="1168" cy="354" r="1.03" fill="#fdfbf5" fill-opacity="0.49"/><circle cx="680" cy="261" r="0.96" fill="#fdfbf5" fill-opacity="0.33"/><circle cx="595" cy="448" r="1.13" fill="#fdfbf5" fill-opacity="0.25"/><circle cx="323" cy="165" r="0.89" fill="#fdfbf5" fill-opacity="0.42"/><circle cx="301" cy="425" r="0.89" fill="#fdfbf5" fill-opacity="0.24"/><circle cx="616" cy="48" r="1.05" fill="#fdfbf5" fill-opacity="0.45"/><circle cx="1027" cy="536" r="1.24" fill="#fdfbf5" fill-opacity="0.22"/><circle cx="351" cy="168" r="0.88" fill="#fdfbf5" fill-opacity="0.29"/><circle cx="740" cy="215" r="0.82" fill="#fdfbf5" fill-opacity="0.36"/><circle cx="1156" cy="288" r="1.28" fill="#fdfbf5" fill-opacity="0.35"/><circle cx="237" cy="52" r="1.23" fill="#fdfbf5" fill-opacity="0.45"/><circle cx="1036" cy="289" r="1.10" fill="#fdfbf5" fill-opacity="0.27"/><circle cx="340" cy="515" r="0.87" fill="#fdfbf5" fill-opacity="0.53"/><circle cx="974" cy="196" r="1.03" fill="#fdfbf5" fill-opacity="0.39"/><circle cx="1326" cy="155" r="0.89" fill="#fdfbf5" fill-opacity="0.56"/><circle cx="702" cy="217" r="1.20" fill="#fdfbf5" fill-opacity="0.41"/><circle cx="489" cy="295" r="0.97" fill="#fdfbf5" fill-opacity="0.51"/><circle cx="297" cy="392" r="0.87" fill="#fdfbf5" fill-opacity="0.53"/><circle cx="929" cy="208" r="1.27" fill="#fdfbf5" fill-opacity="0.32"/><circle cx="194" cy="277" r="0.85" fill="#fdfbf5" fill-opacity="0.42"/><circle cx="1241" cy="240" r="1.20" fill="#fdfbf5" fill-opacity="0.46"/><circle cx="944" cy="594" r="0.91" fill="#fdfbf5" fill-opacity="0.30"/><circle cx="585" cy="231" r="1.03" fill="#fdfbf5" fill-opacity="0.35"/><circle cx="1088" cy="129" r="1.13" fill="#fdfbf5" fill-opacity="0.21"/>
               <circle cx="1300" cy="138" r="58" fill="none" stroke="#fdfbf5" stroke-width="1" vector-effect="non-scaling-stroke"/><path d="M 1300 80 A 58 58 0 0 0 1300 196 A 26 58 0 0 0 1300 80 Z" fill="#fdfbf5" fill-opacity="0.6"/>
             </svg>
             <div class="room3-surface" aria-hidden="true"></div>
-            <h1 class="plaque-wordmark room3-wordmark" aria-label="Lucas Reed">
+            <h2 class="plaque-wordmark room3-wordmark" id="room-3-title" aria-label="Lucas Reed">
               <span class="r3-line"><span class="g g-L">L</span><span class="g g-u">u</span><span class="g g-c">c</span><span class="g g-a">a</span><span class="g g-s">s</span></span>
               <span class="r3-line"><span class="g g-R">R</span><span class="g g-e1">e</span><span class="g g-e2">e</span><span class="g g-d">d</span></span>
-            </h1>
-          </main>
+            </h2>
+          </div>
         </section>
 
-        <section class="carousel-slide" data-screen-label="Room 4">
-          <main class="plaque room4" data-screen-label="microscopy">
+        <section class="carousel-slide" role="tabpanel" id="room-4" aria-labelledby="room-4-title" tabindex="0" data-screen-label="Room 4">
+          <div class="plaque room4" data-screen-label="microscopy">
             <div class="room4-field" aria-hidden="true"></div>
             <div class="room4-haze" aria-hidden="true"></div>
             <div class="room4-lens" aria-hidden="true"></div>
@@ -236,23 +237,23 @@
                 </g>
               </g>
             </svg>
-            <h1 class="plaque-wordmark room4-wordmark" aria-label="Lucas Reed">
+            <h2 class="plaque-wordmark room4-wordmark" id="room-4-title" aria-label="Lucas Reed">
               <span class="plaque-wordmark__given">Lucas</span>
               <span class="plaque-wordmark__family">Reed</span>
-            </h1>
-          </main>
+            </h2>
+          </div>
         </section>
 
       </div>
 
       <div class="carousel-dots" id="dots" role="tablist" aria-label="Rooms">
-        <button class="carousel-dot" type="button" data-index="0" aria-current="true" aria-label="Room 1"></button>
-        <button class="carousel-dot" type="button" data-index="1" aria-current="false" aria-label="Room 2"></button>
-        <button class="carousel-dot" type="button" data-index="2" aria-current="false" aria-label="Room 3"></button>
-        <button class="carousel-dot" type="button" data-index="3" aria-current="false" aria-label="Room 4"></button>
+        <button class="carousel-dot" type="button" role="tab" data-index="0" aria-controls="room-1" aria-selected="true" aria-label="Room 1"></button>
+        <button class="carousel-dot" type="button" role="tab" data-index="1" aria-controls="room-2" aria-selected="false" aria-label="Room 2"></button>
+        <button class="carousel-dot" type="button" role="tab" data-index="2" aria-controls="room-3" aria-selected="false" aria-label="Room 3"></button>
+        <button class="carousel-dot" type="button" role="tab" data-index="3" aria-controls="room-4" aria-selected="false" aria-label="Room 4"></button>
       </div>
     </div>
-  </div>
+  </main>
 </div>
 
 <script src="js/app.js"></script>

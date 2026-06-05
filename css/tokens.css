@@ -59,3 +59,16 @@
 @media (prefers-reduced-motion: reduce) {
   :root { --plaque-t-fast: 0ms; --plaque-t-base: 0ms; }
 }
+
+/* Visually hidden but exposed to assistive tech. Used for the single document
+   h1 ("Lucas Reed") that anchors the outline — the per-room h2 wordmarks are
+   the visible identity. */
+.sr-only {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

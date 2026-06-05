@@ -40,13 +40,17 @@
   // ---- carousel: arrow keys, horizontal scroll, swipe, dots ----
   var track = document.getElementById("track");
   var dots = Array.prototype.slice.call(document.querySelectorAll(".carousel-dot"));
+  var panels = Array.prototype.slice.call(document.querySelectorAll(".carousel-slide"));
   var COUNT = 4, index = 0;
   function goTo(i) {
     index = Math.max(0, Math.min(COUNT - 1, i));
     track.style.transform = "translateX(" + (-index * 100) + "%)";
-    dots.forEach(function (d, n) { d.setAttribute("aria-current", n === index ? "true" : "false"); });
+    dots.forEach(function (d, n) { d.setAttribute("aria-selected", n === index ? "true" : "false"); });
+    // inert (not aria-hidden) on non-active panels: keeps them out of the a11y tree
+    // AND prevents focus into off-screen interactive elements (theme toggle, links).
+    panels.forEach(function (p, n) { if (n === index) { p.removeAttribute("inert"); } else { p.setAttribute("inert", ""); } });
     if (index === 1) {
-      var r2 = document.querySelectorAll(".carousel-slide")[1];
+      var r2 = panels[1];
       if (r2) r2.classList.add("r2-grow");
     }
     document.getElementById("dots").classList.toggle("dots-on-night", index === 2 || index === 3);
