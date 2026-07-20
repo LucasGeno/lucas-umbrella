@@ -1,0 +1,187 @@
+/* Stipple portrait — the About section's interactive engraving.
+   Samples the portrait image's luminance into a field of ink dots
+   (darker pixel → bigger dot); dots near the pointer are pushed away and
+   spring back home. Ink color reads --plaque-ink via computed style, and
+   re-reads on theme flips. Reduced-motion: static field, no animation.
+   The rAF loop runs only while dots are displaced — an idle page costs
+   nothing. */
+(function () {
+  "use strict";
+
+  const canvas = document.querySelector(".stipple-portrait");
+  if (!canvas || !canvas.dataset.portraitSrc) return;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+
+  const REDUCED = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const COLS = 120;       // dot-grid columns across the portrait (higher = finer)
+  const MAX_R = 1.7;      // dot radius at full darkness (display px)
+  const MIN_R = 0.28;     // lighter than this → no dot
+  const POINTER_R = 56;   // pointer influence radius (display px)
+  const PUSH = 3.2;       // displacement impulse per frame inside the radius
+  const SPRING = 0.06;    // pull back toward home
+  const DAMP = 0.82;      // velocity damping
+  const EPS = 0.05;       // below this offset+velocity a dot counts as home
+
+  /* Pure: ImageData → [{hx, hy, r}] in image space on a cols-wide grid.
+     Rec.709 luminance drives radius. Exposed on window as the runnable
+     self-check seam (see tests/test_stipple_portrait.py). */
+  function computeDotField(imageData, cols, maxR, minR) {
+    const step = imageData.width / cols;
+    const rows = Math.floor(imageData.height / step);
+    const dots = [];
+    for (let gy = 0; gy < rows; gy++) {
+      for (let gx = 0; gx < cols; gx++) {
+        const sx = Math.min(imageData.width - 1, Math.round((gx + 0.5) * step));
+        const sy = Math.min(imageData.height - 1, Math.round((gy + 0.5) * step));
+        const i = (sy * imageData.width + sx) * 4;
+        const a = imageData.data[i + 3];
+        const lum =
+          0.2126 * imageData.data[i] +
+          0.7152 * imageData.data[i + 1] +
+          0.0722 * imageData.data[i + 2];
+        // Alpha folds into darkness: a cut-out portrait (transparent PNG) drops
+        // its background to blank paper, and soft hair mattes fade out instead
+        // of hard-edging. Opaque photos (a=255) are unaffected — backward
+        // compatible with the placeholder.
+        const r = (1 - lum / 255) * (a / 255) * maxR;
+        if (r >= minR) {
+          dots.push({ hx: (gx + 0.5) * step, hy: (gy + 0.5) * step, r: r });
+        }
+      }
+    }
+    return dots;
+  }
+  window.__stippleComputeDotField = computeDotField;
+
+  let dots = [];
+  let ink = "#0c0c0a";
+  let running = false;
+  let pointer = null; // {x, y} in display px, or null
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+  function readInk() {
+    ink = getComputedStyle(canvas).color;
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = ink;
+    for (let i = 0; i < dots.length; i++) {
+      const d = dots[i];
+      ctx.beginPath();
+      ctx.arc(d.x * dpr, d.y * dpr, d.r * dpr, 0, 6.2832);
+      ctx.fill();
+    }
+  }
+
+  function settled() {
+    if (pointer) return false;
+    for (let i = 0; i < dots.length; i++) {
+      const d = dots[i];
+      if (
+        Math.abs(d.x - d.hx) + Math.abs(d.y - d.hy) +
+        Math.abs(d.vx) + Math.abs(d.vy) > EPS
+      ) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function tick() {
+    for (let i = 0; i < dots.length; i++) {
+      const d = dots[i];
+      if (pointer) {
+        const dx = d.x - pointer.x;
+        const dy = d.y - pointer.y;
+        const dist = Math.hypot(dx, dy);
+        if (dist < POINTER_R && dist > 0.001) {
+          const f = (1 - dist / POINTER_R) * PUSH;
+          d.vx += (dx / dist) * f;
+          d.vy += (dy / dist) * f;
+        }
+      }
+      d.vx = (d.vx + (d.hx - d.x) * SPRING) * DAMP;
+      d.vy = (d.vy + (d.hy - d.y) * SPRING) * DAMP;
+      d.x += d.vx;
+      d.y += d.vy;
+    }
+    draw();
+    if (settled()) {
+      // snap home so the field is pixel-identical to the static render
+      for (let i = 0; i < dots.length; i++) {
+        const d = dots[i];
+        d.x = d.hx; d.y = d.hy; d.vx = 0; d.vy = 0;
+      }
+      draw();
+      running = false;
+      return;
+    }
+    requestAnimationFrame(tick);
+  }
+
+  function wake() {
+    if (REDUCED || running) return;
+    running = true;
+    requestAnimationFrame(tick);
+  }
+
+  function init(img) {
+    // ponytail: sized once from layout at init; a window resize re-renders
+    // on next visit, not live. Add a ResizeObserver if it ever matters.
+    const cssW = canvas.clientWidth || 300;
+    const cssH = canvas.clientHeight || Math.round((cssW * 5) / 4);
+    canvas.width = Math.round(cssW * dpr);
+    canvas.height = Math.round(cssH * dpr);
+
+    const probe = document.createElement("canvas");
+    probe.width = img.naturalWidth;
+    probe.height = img.naturalHeight;
+    const pctx = probe.getContext("2d", { willReadFrequently: true });
+    pctx.drawImage(img, 0, 0);
+    const field = computeDotField(
+      pctx.getImageData(0, 0, probe.width, probe.height),
+      COLS, MAX_R, MIN_R
+    );
+
+    // map image space → display space, letterboxed to the canvas
+    const scale = Math.min(cssW / img.naturalWidth, cssH / img.naturalHeight);
+    const ox = (cssW - img.naturalWidth * scale) / 2;
+    const oy = (cssH - img.naturalHeight * scale) / 2;
+    dots = field.map(function (d) {
+      const hx = ox + d.hx * scale;
+      const hy = oy + d.hy * scale;
+      return { hx: hx, hy: hy, x: hx, y: hy, vx: 0, vy: 0, r: d.r };
+    });
+
+    readInk();
+    draw();
+
+    if (REDUCED) return; // static engraving only
+
+    canvas.addEventListener("pointermove", function (e) {
+      const rect = canvas.getBoundingClientRect();
+      pointer = { x: e.clientX - rect.left, y: e.clientY - rect.top };
+      wake();
+    });
+    canvas.addEventListener("pointerleave", function () {
+      pointer = null;
+      wake(); // let the field spring home, then the loop stops itself
+    });
+  }
+
+  // redraw in the new ink when the theme flips (data-theme on <html>)
+  new MutationObserver(function () {
+    readInk();
+    if (!running) draw();
+  }).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-theme"],
+  });
+
+  const img = new Image();
+  img.decoding = "async";
+  img.onload = function () { init(img); };
+  img.src = canvas.dataset.portraitSrc;
+})();

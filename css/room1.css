@@ -1,13 +1,7 @@
 /*
- * Room 1 — the Plaque (the unaltered baseline).
- *
- * NOTE: This file also hosts the shared `.plaque` shell + theme-toggle
- * chrome (.plaque-wordmark, .plaque-section-line, .plaque-meta,
- * .plaque-colophon, .plaque-chrome, .theme-toggle, .icon-sun, .icon-moon).
- * Every room renders <main class="plaque"> and inherits this shell —
- * these rules are de-facto shared baseline, not room-1-specific. They live
- * here because Room 1 is the unaltered baseline; Rooms 2/3/4 override
- * specific properties in their own files.
+ * Umbrella landing — the Plaque hero + museum-label About/Index/Contact
+ * sections that scroll below. Kept in one file so the whole surface is one
+ * read; splits can wait until it actually hurts.
  */
 
 /* ============================================================
@@ -117,3 +111,167 @@
 .theme-toggle .icon-moon { display: block; }
 :root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
 :root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+/* ============================================================
+   Scroll hint — the ↓ under the colophon
+   ============================================================ */
+.plaque-hint {
+  margin-top: var(--plaque-s-5);
+  color: var(--plaque-ink-3);
+  text-decoration: none;
+  font-family: var(--plaque-font-body); font-size: 14px; line-height: 1;
+  animation: plaque-hint-drift 2.4s ease-in-out infinite;
+  transition: opacity 400ms ease;
+}
+.plaque-hint[data-hidden="true"] { opacity: 0; pointer-events: none; }
+@keyframes plaque-hint-drift {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(4px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .plaque-hint { animation: none; }
+}
+
+/* ============================================================
+   Museum-label sections — About / Index / Contact
+   ============================================================ */
+.umbrella-section {
+  background: var(--plaque-paper);
+  color: var(--plaque-ink);
+  border-top: 1px solid var(--plaque-paper-2);
+  padding: 14vh var(--plaque-s-5);
+}
+.umbrella-about   { padding: 16vh var(--plaque-s-5); }
+.umbrella-contact { padding: 14vh var(--plaque-s-5) 18vh; }
+
+.umbrella-section__inner {
+  max-width: 960px; margin: 0 auto;
+  display: flex; flex-wrap: wrap; gap: var(--plaque-s-7);
+}
+.umbrella-eyebrow {
+  margin: 0; flex: 0 0 160px;
+  font-family: var(--plaque-font-body); font-size: 12px; font-weight: 500;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--plaque-ink-3);
+}
+
+/* Reveal-on-scroll — sections default hidden + shifted, opt-in via [data-revealed] */
+[data-reveal] {
+  opacity: 0; transform: translateY(16px);
+  transition: opacity 700ms ease, transform 700ms ease;
+}
+[data-reveal][data-revealed="true"] { opacity: 1; transform: translateY(0); }
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] { transition: none; }
+}
+
+/* -- About -- */
+.umbrella-about__body {
+  flex: 1 1 520px; display: flex; flex-wrap: wrap; gap: var(--plaque-s-7);
+  align-items: flex-start;
+}
+.umbrella-figure {
+  margin: 0; flex: 0 1 280px; min-width: 220px;
+}
+.umbrella-figure__frame {
+  aspect-ratio: 4 / 5; background: var(--plaque-paper-2);
+}
+.umbrella-figure canvas {
+  display: block; width: 100%; height: 100%;
+  color: var(--plaque-ink); touch-action: pan-y; cursor: crosshair;
+}
+.umbrella-figure figcaption {
+  margin-top: 12px;
+  font-family: var(--plaque-font-body); font-size: 11px;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--plaque-ink-3);
+}
+.umbrella-about__text { flex: 1 1 300px; }
+.umbrella-lede {
+  margin: 0 0 var(--plaque-s-4);
+  font-family: var(--plaque-font-body); font-size: 16px; font-weight: 600;
+  color: var(--plaque-ink);
+}
+.umbrella-body {
+  margin: 0 0 var(--plaque-s-5);
+  font-family: var(--plaque-font-body); font-size: 16px; line-height: 1.65;
+  color: var(--plaque-ink-2); max-width: 52ch;
+}
+.umbrella-dl {
+  margin: 0 0 var(--plaque-s-5); display: flex; flex-direction: column;
+}
+.umbrella-dl__row {
+  display: grid; grid-template-columns: 120px 1fr; gap: var(--plaque-s-4);
+  border-top: 1px solid var(--plaque-paper-2); padding: 10px 0;
+}
+.umbrella-dl__row--last { border-bottom: 1px solid var(--plaque-paper-2); }
+.umbrella-dl dt {
+  font-family: var(--plaque-font-body); font-size: 11px;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--plaque-ink-3);
+}
+.umbrella-dl dd {
+  margin: 0; font-family: var(--plaque-font-body); font-size: 14px;
+  color: var(--plaque-ink-2);
+}
+.umbrella-more {
+  margin: 0; font-family: var(--plaque-font-body); font-size: 13px;
+  letter-spacing: 0.04em;
+}
+.umbrella-more a {
+  color: var(--plaque-ink-2); text-decoration: none;
+  border-bottom: 1px solid var(--plaque-ink-3);
+  transition: opacity var(--plaque-t-fast);
+}
+.umbrella-more a:hover, .umbrella-more a:focus-visible { opacity: 0.6; }
+
+/* -- Index -- */
+.umbrella-index__list {
+  flex: 1 1 520px; list-style: none; margin: 0; padding: 0;
+  display: flex; flex-direction: column;
+}
+.umbrella-index__list li:last-child a { border-bottom: 1px solid var(--plaque-paper-2); }
+.umbrella-index__list a {
+  display: grid; grid-template-columns: 40px 130px 1fr;
+  gap: var(--plaque-s-4); align-items: baseline;
+  border-top: 1px solid var(--plaque-paper-2);
+  padding: 20px 0; text-decoration: none;
+  transition: opacity var(--plaque-t-fast);
+}
+.umbrella-index__list a:hover, .umbrella-index__list a:focus-visible { opacity: 0.6; }
+.umbrella-index__num {
+  font-family: var(--plaque-font-body); font-size: 11px;
+  letter-spacing: 0.16em; color: var(--plaque-ink-3);
+}
+.umbrella-index__name {
+  font-family: var(--plaque-font-body); font-size: 16px; font-weight: 500;
+  color: var(--plaque-ink);
+}
+.umbrella-index__desc {
+  font-family: var(--plaque-font-body); font-size: 15px;
+  color: var(--plaque-ink-3);
+}
+
+/* -- Contact -- */
+.umbrella-contact__body { flex: 1 1 520px; }
+.umbrella-contact__list {
+  list-style: none; margin: 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: 32px var(--plaque-s-7);
+}
+.umbrella-contact__list li {
+  display: flex; flex-direction: column; gap: var(--plaque-s-2);
+}
+.umbrella-contact__num {
+  font-family: var(--plaque-font-body); font-size: 11px;
+  letter-spacing: 0.16em; color: var(--plaque-ink-3);
+}
+.umbrella-contact__list a {
+  font-family: var(--plaque-font-body); font-size: 16px; letter-spacing: 0.04em;
+  color: var(--plaque-ink-2); text-decoration: none;
+  border-bottom: 1px solid var(--plaque-ink-3);
+  transition: opacity var(--plaque-t-fast);
+}
+.umbrella-contact__list a:hover, .umbrella-contact__list a:focus-visible { opacity: 0.6; }
+.umbrella-colophon {
+  margin: var(--plaque-s-8) 0 0;
+  border-top: 1px solid var(--plaque-paper-2); padding-top: var(--plaque-s-5);
+  font-family: var(--plaque-font-body); font-size: 12px;
+  letter-spacing: 0.04em; text-transform: uppercase; color: var(--plaque-ink-3);
+}

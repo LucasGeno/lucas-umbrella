@@ -1,6 +1,7 @@
 # lucas-umbrella
 
-Static umbrella landing at `https://lucasreed.me/` — the Plaque Rooms carousel.
+Static umbrella landing at `https://lucasreed.me/` — the Plaque hero, with
+About / Index / Contact museum-label sections scrolling below.
 
 Deploys to `lucas-platform` (`/opt/platform/umbrella/`) on push to `main` via the
 GitHub Actions workflow in `.github/workflows/deploy.yml`. The platform's Caddy
