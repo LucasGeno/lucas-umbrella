@@ -1,6 +1,9 @@
 /* ============================================================
    THE PLAQUE — tokens (forked from design system colors_and_type.css)
    ============================================================ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; overflow-x: clip; }
+
 @font-face {
   font-family: "Roboto Flex";
   /* Modern parsers pick format("truetype") tech(variations); older ones fall

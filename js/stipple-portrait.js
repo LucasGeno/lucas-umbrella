@@ -149,16 +149,31 @@
     const scale = Math.min(cssW / img.naturalWidth, cssH / img.naturalHeight);
     const ox = (cssW - img.naturalWidth * scale) / 2;
     const oy = (cssH - img.naturalHeight * scale) / 2;
+    // Non-reduced: dots start scattered from home; the first wake() call
+    // (fired when the About section scrolls into view) springs them into
+    // formation. Reduced-motion: land at home immediately, static engraving.
+    const scatter = REDUCED ? 0 : 1;
     dots = field.map(function (d) {
       const hx = ox + d.hx * scale;
       const hy = oy + d.hy * scale;
-      return { hx: hx, hy: hy, x: hx, y: hy, vx: 0, vy: 0, r: d.r };
+      const ang = Math.random() * 6.2832;
+      const dist = (30 + Math.random() * 130) * scatter;
+      return {
+        hx: hx, hy: hy,
+        x: hx + Math.cos(ang) * dist,
+        y: hy + Math.sin(ang) * dist,
+        vx: 0, vy: 0, r: d.r
+      };
     });
 
     readInk();
     draw();
 
     if (REDUCED) return; // static engraving only
+
+    // Expose wake for app.js — fired once when About scrolls into view so the
+    // scattered dots assemble in front of the user, not before.
+    window.__stippleWake = wake;
 
     canvas.addEventListener("pointermove", function (e) {
       const rect = canvas.getBoundingClientRect();
@@ -169,6 +184,27 @@
       pointer = null;
       wake(); // let the field spring home, then the loop stops itself
     });
+
+    // Idle flicker — every ~2.8s, if nobody's touching + canvas is on-screen,
+    // ripple a random cluster of dots. Invitation to touch. Skipped when the
+    // tab is hidden so the page costs nothing in the background.
+    setInterval(function () {
+      if (pointer || document.hidden || !dots.length) return;
+      const rect = canvas.getBoundingClientRect();
+      if (rect.bottom < 0 || rect.top > window.innerHeight) return;
+      const c = dots[Math.floor(Math.random() * dots.length)];
+      const R2 = 34;
+      for (let i = 0; i < dots.length; i++) {
+        const d = dots[i];
+        const dx = d.hx - c.hx, dy = d.hy - c.hy, dist = Math.hypot(dx, dy);
+        if (dist < R2) {
+          const f = (1 - dist / R2) * 1.6;
+          d.vx += (dist > 0.001 ? dx / dist : 0) * f;
+          d.vy += (dist > 0.001 ? dy / dist : 1) * f;
+        }
+      }
+      wake();
+    }, 2800);
   }
 
   // redraw in the new ink when the theme flips (data-theme on <html>)

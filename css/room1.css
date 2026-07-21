@@ -24,21 +24,12 @@
   font-size: var(--plaque-size-mark);
   line-height: 0.92; letter-spacing: -0.02em; text-align: center; margin: 0;
   user-select: none; cursor: pointer;
-  font-variation-settings: var(--plaque-mark-rest);
-  transition: font-variation-settings var(--plaque-t-base);
   contain: layout;
 }
-.plaque-wordmark__given, .plaque-wordmark__family { display: block; }
-.plaque[data-active="true"] .plaque-wordmark { font-variation-settings: var(--plaque-mark-active); }
-
-@keyframes plaque-pulse {
-  0%   { font-variation-settings: "opsz" 144, "wdth" 125, "wght" 800; animation-timing-function: ease-in; }
-  50%  { font-variation-settings: "opsz" 144, "wdth" 125, "wght" 100; animation-timing-function: cubic-bezier(.34, 1.56, .64, 1); }
-  100% { font-variation-settings: "opsz" 144, "wdth" 125, "wght" 800; }
-}
-.plaque[data-pulsing="true"] .plaque-wordmark { animation: plaque-pulse 700ms; }
-@media (prefers-reduced-motion: reduce) {
-  .plaque[data-pulsing="true"] .plaque-wordmark { animation-duration: 0ms; }
+.plaque-wordmark__line { display: block; }
+.plaque-wordmark__letter {
+  display: inline-block;
+  font-variation-settings: var(--plaque-mark-rest);
 }
 
 .plaque-section-line {
@@ -90,8 +81,45 @@
 .plaque-colophon a { color: var(--plaque-ink-2); text-decoration: none; transition: opacity var(--plaque-t-fast); }
 .plaque-colophon a:hover, .plaque-colophon a:focus-visible { opacity: 0.6; }
 
-/* theme toggle — fixed top-right, 28×28, 1px ink border, squared */
-.plaque-chrome { position: absolute; top: var(--plaque-s-5); right: var(--plaque-s-5); z-index: 30; }
+/* grain — SVG turbulence pinned above everything, non-interactive */
+.plaque-grain {
+  position: fixed; inset: 0; z-index: 50; pointer-events: none; opacity: 0.04;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='saturate' values='0'/></filter><rect width='240' height='240' filter='url(%23n)'/></svg>");
+  background-size: 240px 240px;
+}
+
+/* Brussels clock line — fixed top-left, uppercase meta */
+.plaque-clock {
+  position: fixed; top: 30px; left: var(--plaque-s-5); z-index: 10;
+  margin: 0;
+  font-family: var(--plaque-font-body); font-size: 11px;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--plaque-ink-3);
+  opacity: 0; transition: opacity 600ms ease 200ms;
+}
+
+/* theme toggle — pinned to viewport top-right so it survives any horizontal
+   overflow inside the plaque (prototype uses position:fixed too). */
+.plaque-chrome { position: fixed; top: var(--plaque-s-5); right: var(--plaque-s-5); z-index: 30; }
+
+/* Entrance stagger — chrome elements fade+lift in after mount. The .plaque
+   gains data-mounted=true on the next rAF, which flips these to their rest.
+   The wordmark itself is driven by the JS physics staircase. */
+.plaque-section-line,
+.plaque-copy,
+.plaque-colophon {
+  opacity: 0; transform: translateY(8px);
+}
+.plaque-section-line { transition: opacity 600ms ease 350ms, transform 600ms ease 350ms; }
+.plaque-copy        { transition: opacity 600ms ease 500ms, transform 600ms ease 500ms; }
+.plaque-colophon    { transition: opacity 600ms ease 650ms, transform 600ms ease 650ms; }
+.plaque[data-mounted="true"] .plaque-section-line,
+.plaque[data-mounted="true"] .plaque-copy,
+.plaque[data-mounted="true"] .plaque-colophon { opacity: 1; transform: translateY(0); }
+.plaque[data-mounted="true"] .plaque-clock { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  .plaque-section-line, .plaque-copy, .plaque-colophon { opacity: 1; transform: none; transition: none; }
+  .plaque-clock { opacity: 1; transition: none; }
+}
 .theme-toggle {
   display: grid; place-items: center;
   width: 28px; height: 28px;
@@ -154,10 +182,11 @@
   letter-spacing: 0.16em; text-transform: uppercase; color: var(--plaque-ink-3);
 }
 
-/* Reveal-on-scroll — sections default hidden + shifted, opt-in via [data-revealed] */
+/* Reveal-on-scroll — subtle fade+lift; threshold in reveal.mjs triggers this
+   well before the section is visible so the user shouldn't perceive a load-in. */
 [data-reveal] {
-  opacity: 0; transform: translateY(16px);
-  transition: opacity 700ms ease, transform 700ms ease;
+  opacity: 0; transform: translateY(8px);
+  transition: opacity 350ms ease, transform 350ms ease;
 }
 [data-reveal][data-revealed="true"] { opacity: 1; transform: translateY(0); }
 @media (prefers-reduced-motion: reduce) {

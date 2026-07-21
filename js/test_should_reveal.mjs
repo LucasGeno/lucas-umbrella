@@ -3,9 +3,10 @@ import assert from "node:assert/strict";
 
 const H = 1000;
 
-assert.equal(shouldReveal({ top: 800, bottom: 1200 }, H), true,  "in view at 88% threshold");
-assert.equal(shouldReveal({ top: 900, bottom: 1400 }, H), false, "below 88% cutoff → hidden");
-assert.equal(shouldReveal({ top: -500, bottom: -50 }, H), false, "scrolled past → hidden");
+// Threshold is viewport * 1.4 → 1400 for H=1000.
+assert.equal(shouldReveal({ top: 1399, bottom: 1900 }, H), true,  "just inside 1.4× threshold");
+assert.equal(shouldReveal({ top: 1401, bottom: 1900 }, H), false, "just past 1.4× threshold → hidden");
+assert.equal(shouldReveal({ top: -500, bottom:  -50 }, H), false, "scrolled past → hidden");
 assert.equal(shouldReveal({ top: -100, bottom:  100 }, H), true,  "straddling top → visible");
 assert.equal(shouldReveal({ top:    0, bottom:   50 }, H), true,  "loaded already in view");
 
