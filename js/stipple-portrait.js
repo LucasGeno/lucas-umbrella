@@ -23,6 +23,24 @@
   const DAMP = 0.82;      // velocity damping
   const EPS = 0.05;       // below this offset+velocity a dot counts as home
 
+  /* Pure: nudge dots within `radius` of (cx, cy) outward with an impulse
+     that falls off linearly with distance. Mutates `dots[i].vx / vy` so the
+     next tick() draws the displacement — same shape as the idle flicker,
+     just centred on a point the caller picks (a finger tap, in practice).
+     Exposed for the runnable self-check. */
+  function applyRipple(dots, cx, cy, radius, strength) {
+    for (let i = 0; i < dots.length; i++) {
+      const d = dots[i];
+      const dx = d.hx - cx, dy = d.hy - cy, dist = Math.hypot(dx, dy);
+      if (dist < radius) {
+        const f = (1 - dist / radius) * strength;
+        d.vx += (dist > 0.001 ? dx / dist : 0) * f;
+        d.vy += (dist > 0.001 ? dy / dist : 1) * f;
+      }
+    }
+  }
+  window.__stippleApplyRipple = applyRipple;
+
   /* Pure: ImageData → [{hx, hy, r}] in image space on a cols-wide grid.
      Rec.709 luminance drives radius. Exposed on window as the runnable
      self-check seam (see tests/test_stipple_portrait.py). */
@@ -184,6 +202,29 @@
       pointer = null;
       wake(); // let the field spring home, then the loop stops itself
     });
+    // pointerleave is spec'd to fire on touch-lift but Safari has historically
+    // been flaky about it. Explicit pointerup/cancel guarantee the spring-back
+    // on a finger release; gated by pointerType so mouse clicks don't kill
+    // the desktop hover.
+    canvas.addEventListener("pointerup", function (e) {
+      if (e.pointerType === "touch") { pointer = null; wake(); }
+    });
+    canvas.addEventListener("pointercancel", function (e) {
+      if (e.pointerType === "touch") { pointer = null; wake(); }
+    });
+
+    // Coarse pointer (touch) — a static tap barely moves the field because
+    // pointermove only fires during drag. Emit an explicit ripple at the tap
+    // point so a single tap has a visible payoff. Drag still works via
+    // pointermove above.
+    if (matchMedia("(pointer: coarse)").matches) {
+      canvas.addEventListener("pointerdown", function (e) {
+        if (e.pointerType !== "touch") return;
+        const rect = canvas.getBoundingClientRect();
+        applyRipple(dots, e.clientX - rect.left, e.clientY - rect.top, 60, 2.5);
+        wake();
+      });
+    }
 
     // Idle flicker — every ~2.8s, if nobody's touching + canvas is on-screen,
     // ripple a random cluster of dots. Invitation to touch. Skipped when the
@@ -193,16 +234,7 @@
       const rect = canvas.getBoundingClientRect();
       if (rect.bottom < 0 || rect.top > window.innerHeight) return;
       const c = dots[Math.floor(Math.random() * dots.length)];
-      const R2 = 34;
-      for (let i = 0; i < dots.length; i++) {
-        const d = dots[i];
-        const dx = d.hx - c.hx, dy = d.hy - c.hy, dist = Math.hypot(dx, dy);
-        if (dist < R2) {
-          const f = (1 - dist / R2) * 1.6;
-          d.vx += (dist > 0.001 ? dx / dist : 0) * f;
-          d.vy += (dist > 0.001 ? dy / dist : 1) * f;
-        }
-      }
+      applyRipple(dots, c.hx, c.hy, 34, 1.6);
       wake();
     }, 2800);
   }

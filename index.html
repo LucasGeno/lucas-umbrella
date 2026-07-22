@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
@@ -24,6 +24,20 @@
      first paint instead of FOUTing through the system fallback. -->
 <link rel="preload" href="fonts/RobotoFlex.ttf" as="font" type="font/ttf" crossorigin />
 <link rel="preload" href="fonts/InterTight.ttf" as="font" type="font/ttf" crossorigin />
+
+<!-- Theme boot: read the visitor's last choice before CSS applies so a
+     returning dark-mode visitor doesn't see a light flash. Default (no
+     stored value) stays light per the html[data-theme] attribute above. -->
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem("umbrella-theme");
+      if (t === "dark" || t === "light") {
+        document.documentElement.setAttribute("data-theme", t);
+      }
+    } catch (e) {}
+  })();
+</script>
 
 <link rel="stylesheet" href="css/tokens.css" />
 <link rel="stylesheet" href="css/room1.css" />

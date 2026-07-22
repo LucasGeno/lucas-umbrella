@@ -78,6 +78,13 @@ if (wordmark) {
     window.addEventListener("pointermove", (e) => { pointer = { x: e.clientX, y: e.clientY }; }, { passive: true });
     window.addEventListener("pointerleave", () => { pointer = null; });
     document.addEventListener("mouseleave", () => { pointer = null; });
+    // Touch has no hover state — once the finger lifts, the letters must
+    // spring back or gravity stays glued to the last touch point forever.
+    // Gate on pointerType so a desktop click (which fires pointerup mid-hover)
+    // doesn't kill the mouse cursor's gravity.
+    const clearTouch = (e) => { if (e.pointerType === "touch") pointer = null; };
+    window.addEventListener("pointerup", clearTouch);
+    window.addEventListener("pointercancel", clearTouch);
   }
 
   wordmark.addEventListener("click", () => { pulseAt = performance.now(); });
@@ -109,12 +116,16 @@ if (plaque && meta && sectionsRoot) {
   });
 }
 
-// ---- theme toggle ----
+// ---- theme toggle (persisted so a returning visitor lands on their choice;
+//      the inline boot script in index.html reads this key before CSS
+//      applies to avoid a first-paint flash). ----
 const toggle = document.getElementById("toggle");
 if (toggle) {
   toggle.addEventListener("click", () => {
     const root = document.documentElement;
-    root.setAttribute("data-theme", root.getAttribute("data-theme") === "dark" ? "light" : "dark");
+    const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    root.setAttribute("data-theme", next);
+    try { localStorage.setItem("umbrella-theme", next); } catch (e) {}
   });
 }
 
