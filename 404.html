@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>404 — Lucas Reed</title>
+<meta name="description" content="This path doesn't resolve." />
+<meta name="robots" content="noindex" />
+<meta name="color-scheme" content="dark light" />
+<meta name="theme-color" content="#f3ede0" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#14110d" media="(prefers-color-scheme: dark)" />
+<link rel="canonical" href="https://lucasreed.me/" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+<link rel="preload" href="fonts/RobotoFlex.ttf" as="font" type="font/ttf" crossorigin />
+<link rel="preload" href="fonts/InterTight.ttf" as="font" type="font/ttf" crossorigin />
+
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem("umbrella-theme");
+      if (t === "dark" || t === "light") {
+        document.documentElement.setAttribute("data-theme", t);
+      }
+    } catch (e) {}
+  })();
+</script>
+
+<link rel="stylesheet" href="css/tokens.css" />
+<link rel="stylesheet" href="css/room1.css" />
+</head>
+<body>
+<div class="plaque-grain" aria-hidden="true"></div>
+<main class="umbrella">
+  <section class="plaque" id="plaque">
+    <p class="plaque-clock" id="clock" aria-hidden="true"></p>
+    <div class="plaque-chrome">
+      <button class="theme-toggle" id="toggle" type="button" aria-label="Toggle theme">
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+    </div>
+
+    <h1 class="plaque-wordmark" id="wordmark">
+      <span class="plaque-wordmark__line"><span class="plaque-wordmark__letter">4</span><span class="plaque-wordmark__letter">0</span><span class="plaque-wordmark__letter">4</span></span>
+    </h1>
+
+    <p class="plaque-copy">this path doesn't resolve.</p>
+
+    <footer class="plaque-colophon">
+      <a href="/">← lucasreed.me</a>
+    </footer>
+  </section>
+</main>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>
