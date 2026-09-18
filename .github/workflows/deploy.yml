@@ -33,6 +33,8 @@ jobs:
             --exclude=.git \
             --exclude=.github \
             --exclude=README.md \
+            --exclude=CLAUDE.md \
+            --exclude=test_*.mjs \
             --exclude=.gitignore \
             -e "ssh -o StrictHostKeyChecking=accept-new -i ~/.ssh/id_ed25519" \
             ./ deploy@platform:/
