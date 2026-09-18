@@ -34,16 +34,17 @@ node test_index_links.mjs && node test_error_pages.mjs && node js/test_should_re
 
 ## Deploy
 
-`.github/workflows/deploy.yml` rsyncs the repo over Tailscale to
-`deploy@platform:/opt/platform/umbrella/` on push to `main`. Caddy serves it
-from `/srv/umbrella/` at exact-match `/` plus `/css/*`, `/js/*`, `/fonts/*`,
-`/favicon.svg`, `/portrait.png` (the `@umbrella_owned` matcher). Cutover landed
-2026-07-21.
+Caddy serves `/srv/umbrella/` at exact-match `/` plus `/css/*`, `/js/*`,
+`/fonts/*`, `/favicon.svg`, `/portrait.png` (the `@umbrella_owned` matcher).
+Cutover landed 2026-07-21.
 
-**Gotcha:** `lucas-platform/AGENTS.md` records that the workflow's Tailscale
-OAuth and `DEPLOY_KEY` secrets were never provisioned — the live deploy was a
-manual rsync. Confirm the Actions run actually succeeded before assuming a push
-went live; otherwise rsync by hand from `ssh platform`.
+**Pushing to `main` does not deploy.** `.github/workflows/deploy.yml` is
+supposed to rsync over Tailscale to `deploy@platform:/opt/platform/umbrella/`,
+but its `TS_OAUTH_*` and `DEPLOY_KEY` secrets were never provisioned (also
+recorded in `lucas-platform/AGENTS.md`). Verified 2026-09-18: two pushes that
+day left the droplet untouched — every file there still has its Jul 30 mtime,
+so the live site is whatever the last manual rsync put there. Deploy by hand
+from `ssh platform`, or provision the secrets; never assume a push went live.
 
 ## Gotchas
 
