@@ -27,12 +27,16 @@ for (const c of cases) {
   assert.match(html, /href="\/"/, `${c.file} link home`);
   assert.match(html, /← lucasreed\.me/, `${c.file} link label`);
 
-  // Same head asset references as index.html so tokens/room1/fonts/js load in place.
-  assert.match(html, /href="css\/tokens\.css"/, `${c.file} loads tokens.css`);
-  assert.match(html, /href="css\/room1\.css"/, `${c.file} loads room1.css`);
-  assert.match(html, /src="js\/app\.js"/, `${c.file} loads app.js`);
-  assert.match(html, /href="fonts\/RobotoFlex\.ttf"/, `${c.file} preloads RobotoFlex`);
-  assert.match(html, /href="fonts\/InterTight\.ttf"/, `${c.file} preloads InterTight`);
+  // Caddy serves these pages for misses at any depth (/tech/projects/nope), so
+  // every asset is root-absolute: a relative "css/..." would resolve under the
+  // missing path and the page would render unstyled.
+  assert.match(html, /href="\/css\/tokens\.css"/, `${c.file} loads /css/tokens.css`);
+  assert.match(html, /href="\/css\/room1\.css"/, `${c.file} loads /css/room1.css`);
+  assert.match(html, /src="\/js\/app\.js"/, `${c.file} loads /js/app.js`);
+  assert.match(html, /href="\/fonts\/RobotoFlex\.ttf"/, `${c.file} preloads /fonts/RobotoFlex.ttf`);
+  assert.match(html, /href="\/fonts\/InterTight\.ttf"/, `${c.file} preloads /fonts/InterTight.ttf`);
+  const relative = [...html.matchAll(/\b(?:href|src)="(?![a-z][a-z0-9+.-]*:|\/|#)([^"]*)"/gi)].map(m => m[1]);
+  assert.deepEqual(relative, [], `${c.file} has no relative href/src`);
 
   // Sections and scroll hint that don't belong on an error page.
   for (const banned of bannedSections) {
