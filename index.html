@@ -57,6 +57,11 @@
   <section class="plaque" id="plaque">
     <p class="plaque-clock" id="clock" aria-hidden="true"></p>
     <div class="plaque-chrome">
+      <!-- Identity chip slot. identity-chip.js swaps the wrap for the /auth/me
+           fragment; until then (or without JS) this is a working Sign in link. -->
+      <div class="identity-chip-wrap">
+        <a class="identity-chip" href="/login?next=/" data-state="loading">Sign in</a>
+      </div>
       <button class="theme-toggle" id="toggle" type="button" aria-label="Toggle theme">
         <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <circle cx="12" cy="12" r="4"></circle>
@@ -197,13 +202,6 @@
     </div>
   </section>
 </main>
-
-<div class="identity-chip-wrap identity-chip-wrap--floating">
-  <a class="identity-chip" href="/login" data-state="loading" data-authed-only aria-label="Sign in">
-    <img class="identity-chip__avatar" src="/static/_shared/_guest.png" alt="" width="24" height="24" />
-    <span class="identity-chip__label">Sign in</span>
-  </a>
-</div>
 
 <script type="module" src="js/app.js"></script>
 <script src="js/stipple-portrait.js"></script>

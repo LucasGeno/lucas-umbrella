@@ -1,5 +1,6 @@
 import { readFileSync, existsSync } from "node:fs";
 import assert from "node:assert/strict";
+import { assertChipSlot } from "./test_chip_slot.mjs";
 
 const cases = [
   { file: "404.html", digits: "404", copy: "this path doesn't resolve." },
@@ -47,6 +48,10 @@ for (const c of cases) {
   assert.match(html, /class="plaque-grain"/, `${c.file} grain overlay`);
   assert.match(html, /localStorage[\s\S]*getItem\("theme"\)/, `${c.file} theme-boot script reads the shared "theme" key`);
   assert.match(html, /removeItem\("umbrella-theme"\)/, `${c.file} theme-boot script retires the legacy key`);
+
+  // Sign-in slot in the plaque chrome, left of the toggle, same as /.
+  assertChipSlot(html, c.file);
+  assert.match(html, /src="\/static\/_shared\/identity-chip\.js"/, `${c.file} loads the chip hydrator`);
 
   // Preserves the two document theme meta colors and canonical link should not point at /.
   assert.match(html, /<link rel="canonical" href="https:\/\/lucasreed\.me\/[^"]*"/, `${c.file} canonical link`);

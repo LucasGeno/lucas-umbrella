@@ -99,7 +99,13 @@
 
 /* theme toggle — pinned to viewport top-right so it survives any horizontal
    overflow inside the plaque (prototype uses position:fixed too). */
-.plaque-chrome { position: fixed; top: var(--plaque-s-5); right: var(--plaque-s-5); z-index: 30; }
+/* Chip slot sits left of the toggle; both are --plaque-chrome-h tall, so the
+   row height never changes when /auth/me swaps the chip in. Right-aligned, so
+   a wider signed-in chip grows leftwards and the toggle never moves. */
+.plaque-chrome {
+  position: fixed; top: var(--plaque-s-5); right: var(--plaque-s-5); z-index: 30;
+  display: flex; align-items: center; gap: var(--plaque-s-2);
+}
 
 /* Entrance stagger — chrome elements fade+lift in after mount. The .plaque
    gains data-mounted=true on the next rAF, which flips these to their rest.
@@ -122,7 +128,7 @@
 }
 .theme-toggle {
   display: grid; place-items: center;
-  width: 28px; height: 28px;
+  width: var(--plaque-chrome-h); height: var(--plaque-chrome-h);
   background: transparent;
   border: 1px solid var(--plaque-ink);
   color: var(--plaque-ink);
@@ -130,15 +136,37 @@
   position: relative;
   transition: opacity var(--plaque-t-fast);
 }
-/* 44×44 transparent hit area centered on the 28×28 toggle (WCAG/Apple HIG min). */
-.theme-toggle::before { content: ""; position: absolute; inset: -8px; }
+/* 44×44 transparent hit area centered on the 34×34 toggle (WCAG/Apple HIG min). */
+.theme-toggle::before { content: ""; position: absolute; inset: -5px; }
 .theme-toggle:hover, .theme-toggle:focus-visible { opacity: 0.6; }
 .theme-toggle:focus-visible { outline: 1px solid var(--plaque-ink); outline-offset: 3px; }
-.theme-toggle svg { width: 12px; height: 12px; }
+.theme-toggle svg { width: 13px; height: 13px; }
 .theme-toggle .icon-sun { display: none; }
 .theme-toggle .icon-moon { display: block; }
 :root[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
 :root[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+/* Identity chip slot — the pre-hydration fallback. Before (or without) JS
+   the slot is a real "Sign in" link drawn exactly like the toggle: same
+   height, square ink hairline, small-caps label. identity-chip.js swaps the
+   whole .identity-chip-wrap for the /auth/me fragment, which brings its own
+   styles; these rules only ever match the placeholder (data-state="loading"),
+   and they out-rank the shared sheet's `visibility: hidden` for that state. */
+.plaque-chrome .identity-chip-wrap { display: flex; }
+.plaque-chrome .identity-chip[data-state="loading"] {
+  visibility: visible;
+  position: relative;
+  display: inline-flex; align-items: center;
+  height: var(--plaque-chrome-h); padding: 0 var(--plaque-s-3);
+  border: 1px solid var(--plaque-ink); border-radius: 0;
+  background: transparent; color: var(--plaque-ink);
+  font: 700 11px/1 var(--plaque-font-body); letter-spacing: 0.14em; text-transform: uppercase;
+  text-decoration: none; white-space: nowrap;
+  transition: background var(--plaque-t-fast), color var(--plaque-t-fast);
+}
+.plaque-chrome .identity-chip[data-state="loading"]::before { content: ""; position: absolute; inset: -5px; }
+.plaque-chrome .identity-chip[data-state="loading"]:hover { background: var(--plaque-ink); color: var(--plaque-paper); }
+.plaque-chrome .identity-chip[data-state="loading"]:focus-visible { outline: 1px solid var(--plaque-ink); outline-offset: 3px; }
 
 /* ============================================================
    Scroll hint — the ↓ under the colophon

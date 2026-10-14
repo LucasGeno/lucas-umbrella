@@ -48,9 +48,14 @@ from `ssh platform`, or provision the secrets; never assume a push went live.
 
 ## Gotchas
 
-- `/static/_shared/identity-chip.{css,js}` and `/static/_guest.png` come from
-  the platform's FastAPI admin app, not this repo. They 404 under a local
-  static server — the chip silently stays in its `loading` state. Expected.
+- `/static/_shared/identity-chip.{css,js}` come from the platform's FastAPI
+  admin app, not this repo, and 404 under a local static server. Every plaque
+  page (`/` and the error pages) ships the chip slot in `.plaque-chrome`, left
+  of the toggle: a real `<a href="/login?next=/" data-state="loading">Sign in</a>`
+  styled by `room1.css` like the toggle, so it works without JS and locally.
+  The hydrator swaps the wrap for the `/auth/me` fragment; `tokens.css` maps
+  `--paper`/`--ink`/`--line`/`--muted` for the shared chip styles.
+  `test_chip_slot.mjs` pins the placeholder markup.
 - The error pages share the plaque markup and `id="wordmark"` so `app.js`
   animates them; `test_error_pages.mjs` asserts that shape and the absence of
   the scroll-below sections. Keep both in sync when the plaque changes.
