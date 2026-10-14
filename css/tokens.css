@@ -31,6 +31,7 @@ html, body { margin: 0; padding: 0; overflow-x: clip; }
   --plaque-ink:      #0c0c0a;
   --plaque-ink-2:    #2a2a26;
   --plaque-ink-3:    #5d5c55;
+  --plaque-line:     #c8c0b1;
 }
 :root[data-theme="dark"] {
   --plaque-paper:    #14110d;
@@ -38,6 +39,7 @@ html, body { margin: 0; padding: 0; overflow-x: clip; }
   --plaque-ink:      #e8e6e1;
   --plaque-ink-2:    #b8b6b1;
   --plaque-ink-3:    #8a8478;
+  --plaque-line:     #4b4439;
 }
 :root {
   --plaque-font-wordmark: "Roboto Flex", system-ui, sans-serif;
@@ -52,7 +54,18 @@ html, body { margin: 0; padding: 0; overflow-x: clip; }
   --plaque-mark-rest:   "opsz" 144, "wdth" 125, "wght" 800;
   --plaque-mark-active: "opsz" 144, "wdth" 125, "wght" 100;
 
+  /* Top chrome: the theme toggle and the identity chip share one height. */
+  --plaque-chrome-h: 34px;
+
+  /* The shared identity chip (/static/_shared/identity-chip.css, served by the
+     platform admin app) styles itself from these four plain names. */
+  --paper: var(--plaque-paper);
+  --ink:   var(--plaque-ink);
+  --line:  var(--plaque-line);
+  --muted: var(--plaque-ink-3);
+
   --plaque-s-2: 8px;
+  --plaque-s-3: 12px;
   --plaque-s-4: 16px;
   --plaque-s-5: 24px;
   --plaque-s-6: 32px;
