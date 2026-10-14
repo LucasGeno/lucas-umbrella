@@ -14,5 +14,5 @@ export function assertChipSlot(html, file) {
   );
   assert.ok(!html.includes("data-authed-only"), `${file} does not hide the chip from signed-out visitors`);
   assert.ok(!html.includes("_guest.png"), `${file} has no guest image`);
-  assert.match(html, /href="\/static\/_shared\/identity-chip\.css"/, `${file} loads the chip styles`);
+  assert.match(html, /href="\/static\/_shared\/identity-chip\.css(\?v=\d+)?"/, `${file} loads the chip styles`);
 }

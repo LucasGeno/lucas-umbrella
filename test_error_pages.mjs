@@ -51,7 +51,7 @@ for (const c of cases) {
 
   // Sign-in slot in the plaque chrome, left of the toggle, same as /.
   assertChipSlot(html, c.file);
-  assert.match(html, /src="\/static\/_shared\/identity-chip\.js"/, `${c.file} loads the chip hydrator`);
+  assert.match(html, /src="\/static\/_shared\/identity-chip\.js(\?v=\d+)?"/, `${c.file} loads the chip hydrator`);
 
   // Preserves the two document theme meta colors and canonical link should not point at /.
   assert.match(html, /<link rel="canonical" href="https:\/\/lucasreed\.me\/[^"]*"/, `${c.file} canonical link`);
