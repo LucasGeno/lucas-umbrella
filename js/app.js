@@ -118,14 +118,15 @@ if (plaque && meta && sectionsRoot) {
 
 // ---- theme toggle (persisted so a returning visitor lands on their choice;
 //      the inline boot script in index.html reads this key before CSS
-//      applies to avoid a first-paint flash). ----
+//      applies to avoid a first-paint flash). "theme" is shared with /tech,
+//      /news and the admin app. ----
 const toggle = document.getElementById("toggle");
 if (toggle) {
   toggle.addEventListener("click", () => {
     const root = document.documentElement;
     const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
     root.setAttribute("data-theme", next);
-    try { localStorage.setItem("umbrella-theme", next); } catch (e) {}
+    try { localStorage.setItem("theme", next); } catch (e) {}
   });
 }
 

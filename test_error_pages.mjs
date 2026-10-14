@@ -45,7 +45,8 @@ for (const c of cases) {
 
   // Grain overlay + theme-boot script carried over so the visual identity matches /.
   assert.match(html, /class="plaque-grain"/, `${c.file} grain overlay`);
-  assert.match(html, /umbrella-theme/, `${c.file} theme-boot script`);
+  assert.match(html, /localStorage[\s\S]*getItem\("theme"\)/, `${c.file} theme-boot script reads the shared "theme" key`);
+  assert.match(html, /removeItem\("umbrella-theme"\)/, `${c.file} theme-boot script retires the legacy key`);
 
   // Preserves the two document theme meta colors and canonical link should not point at /.
   assert.match(html, /<link rel="canonical" href="https:\/\/lucasreed\.me\/[^"]*"/, `${c.file} canonical link`);

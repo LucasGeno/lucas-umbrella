@@ -54,8 +54,9 @@ from `ssh platform`, or provision the secrets; never assume a push went live.
 - The error pages share the plaque markup and `id="wordmark"` so `app.js`
   animates them; `test_error_pages.mjs` asserts that shape and the absence of
   the scroll-below sections. Keep both in sync when the plaque changes.
-- Theme boots from an inline script reading `localStorage["umbrella-theme"]`
-  before CSS applies. Default is light via `html[data-theme]`; don't move that
+- Theme boots from an inline script reading `localStorage["theme"]` (shared
+  with /tech, /news and admin; the legacy `umbrella-theme` key is migrated
+  once and removed) before CSS applies. Default is light via `html[data-theme]`; don't move that
   script below the stylesheets or returning dark visitors get a flash.
 - This page opts out of the platform's `umbrella-bar` — it *is* home.
 - Cloudflare fronts the site; after a content-shape change run

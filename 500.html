@@ -18,7 +18,15 @@
 <script>
   (function () {
     try {
-      var t = localStorage.getItem("umbrella-theme");
+      // "theme" is the key /tech, /news and the admin app use, so a choice
+      // made on any of them carries over. "umbrella-theme" is the legacy key:
+      // read once, migrated, removed.
+      var s = localStorage, t = s.getItem("theme");
+      if (t !== "dark" && t !== "light") {
+        t = s.getItem("umbrella-theme");
+        if (t === "dark" || t === "light") s.setItem("theme", t);
+      }
+      s.removeItem("umbrella-theme");
       if (t === "dark" || t === "light") {
         document.documentElement.setAttribute("data-theme", t);
       }
