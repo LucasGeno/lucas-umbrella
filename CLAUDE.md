@@ -48,6 +48,12 @@ from `ssh platform`, or provision the secrets; never assume a push went live.
 
 ## Gotchas
 
+- Hero links under the wordmark are a curated shortlist of **at most four**.
+  The full index lists every site. Use the same lowercase slash-prefixed label
+  and destination in both places, including external sites (e.g. `/farmcore`).
+  `test_index_links.mjs` checks the cap and consistency. Adding a site to the
+  full index does not require adding it to the hero.
+
 - `/static/_shared/identity-chip.{css,js}` come from the platform's FastAPI
   admin app, not this repo, and 404 under a local static server. Every plaque
   page (`/` and the error pages) ships the chip slot in `.plaque-chrome`, left
