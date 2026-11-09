@@ -159,7 +159,7 @@ const maybeWakeStipple = () => {
 };
 if (reduced) {
   revealTargets.forEach((el) => el.setAttribute("data-revealed", "true"));
-} else {
+} else if (revealTargets.length || stippleCanvas) {
   const check = () => {
     for (let i = revealTargets.length - 1; i >= 0; i--) {
       const el = revealTargets[i];
@@ -169,7 +169,7 @@ if (reduced) {
       }
     }
     maybeWakeStipple();
-    if (!revealTargets.length && stippleWoken) {
+    if (!revealTargets.length && (!stippleCanvas || stippleWoken)) {
       window.removeEventListener("scroll", check);
       clearInterval(revT);
     }
