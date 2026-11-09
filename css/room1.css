@@ -107,17 +107,17 @@
   display: flex; align-items: center; gap: var(--plaque-s-2);
 }
 
-/* Entrance stagger — chrome elements fade+lift in after mount. The .plaque
-   gains data-mounted=true on the next rAF, which flips these to their rest.
+/* Entrance stagger — JS opts into hiding with data-mounted=false, then
+   sets data-mounted=true on the next rAF. Without JS, content stays visible.
    The wordmark itself is driven by the JS physics staircase. */
-.plaque-section-line,
-.plaque-copy,
-.plaque-colophon {
-  opacity: 0; transform: translateY(8px);
-}
 .plaque-section-line { transition: opacity 600ms ease 350ms, transform 600ms ease 350ms; }
 .plaque-copy        { transition: opacity 600ms ease 500ms, transform 600ms ease 500ms; }
 .plaque-colophon    { transition: opacity 600ms ease 650ms, transform 600ms ease 650ms; }
+:where(.plaque[data-mounted="false"]) .plaque-section-line,
+:where(.plaque[data-mounted="false"]) .plaque-copy,
+:where(.plaque[data-mounted="false"]) .plaque-colophon {
+  opacity: 0; transform: translateY(8px); transition: none;
+}
 .plaque[data-mounted="true"] .plaque-section-line,
 .plaque[data-mounted="true"] .plaque-copy,
 .plaque[data-mounted="true"] .plaque-colophon { opacity: 1; transform: translateY(0); }
@@ -213,9 +213,10 @@
 /* Reveal-on-scroll — subtle fade+lift; threshold in reveal.mjs triggers this
    well before the section is visible so the user shouldn't perceive a load-in. */
 [data-reveal] {
-  opacity: 0; transform: translateY(8px);
+  opacity: 1; transform: translateY(0);
   transition: opacity 350ms ease, transform 350ms ease;
 }
+[data-reveal][data-revealed="false"] { opacity: 0; transform: translateY(8px); transition: none; }
 [data-reveal][data-revealed="true"] { opacity: 1; transform: translateY(0); }
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] { transition: none; }

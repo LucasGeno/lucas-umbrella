@@ -93,6 +93,9 @@ if (wordmark) {
 // ---- mount fade: flip data-mounted next frame so chrome fades in ----
 if (plaque) {
   requestAnimationFrame(() => plaque.setAttribute("data-mounted", "true"));
+  plaque.setAttribute("data-mounted", "false");
+  // Commit the entrance state before the next frame, even after first paint.
+  void plaque.offsetHeight;
 }
 
 // ---- section-hover meta fade + thinning trigger ----
@@ -176,5 +179,8 @@ if (reduced) {
   };
   window.addEventListener("scroll", check, { passive: true });
   const revT = setInterval(check, 400);
+  revealTargets.forEach((el) => el.setAttribute("data-revealed", "false"));
+  // Establish the hidden state without animating visible content out first.
+  void revealTargets[0]?.offsetHeight;
   check();
 }
