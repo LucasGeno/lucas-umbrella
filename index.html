@@ -40,10 +40,11 @@
         if (t === "dark" || t === "light") s.setItem("theme", t);
       }
       s.removeItem("umbrella-theme");
-      if (t === "dark" || t === "light") {
-        document.documentElement.setAttribute("data-theme", t);
-      }
     } catch (e) {}
+    // Apply a resolved theme even if migration or cleanup failed.
+    if (t === "dark" || t === "light") {
+      document.documentElement.setAttribute("data-theme", t);
+    }
   })();
 </script>
 
